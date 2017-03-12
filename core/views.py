@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
+from django.core import serializers
 
 from .models import Thread, Message
 
@@ -30,6 +31,7 @@ def user_list(request):
 def thread(request, username):
     """Thread page."""
     messages = []
+    users = {}
     user = get_object_or_404(User, username=username)
     thread = Thread.objects.annotate(count=Count('users')).filter(users=request.user).filter(users=user).filter(count=2).first()
     if not thread:
@@ -38,10 +40,14 @@ def thread(request, username):
         thread.users.add(request.user, user)
     else:
         messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:100]
+        for message in messages:
+            if message.user.pk not in users:
+                users[message.user.pk] = message.user.username
 
     return render(request, 'thread.html', {
         'thread': thread,
-        'messages': messages
+        'messages': messages,
+        'users': users,
     })
 
 

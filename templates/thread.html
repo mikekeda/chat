@@ -6,26 +6,16 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        {{ thread.name }}
+                        <h4>{{ thread.name }}</h4>
                     </div>
                     <div class="panel-body">
-                        <ul class="chat">
+                        <ul id="messages" class="chat">
+                            {% include "message.html" %}
                             {% for message in messages %}
-                                <li id="message-{{ message.pk }}" class="left clearfix message">
-                                    <span class="chat-img pull-left">
-                                        <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">{{ message.user.username }}</strong>
-                                            <small class="date float-right text-muted">{{ message.date|timesince }}</small>
-                                        </div>
-                                        <p class="text">{{ message.text }}</p>
-                                    </div>
-                                </li>
+                                {% include "message.html" %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -47,6 +37,7 @@
 
 {% block script %}
   <script>
+    var users = {% autoescape off %}{{ users }}{% endautoescape %} ;
     var socket = new WebSocket('ws://' + window.location.host + '/thread/' + {{ thread.id }});
 
     socket.onopen = function open() {
@@ -68,6 +59,21 @@
       if (action == 'update') {
         $message = $('#message-'+pk);
         $message.find('.text').text(data.text);
+      }
+
+      // Insert.
+      if (action == 'create') {
+        $message = $('#message-').clone().removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
+        $message.find('.text').text(data.text);
+        $message.find('.date').data('date', data.date).text('{% trans "Just now" %}');
+        if (users.hasOwnProperty(data.user)) {
+          $message.find('.username').text(users[data.user]);
+        }
+      }
+
+      // Delete.
+      if (action == 'delete') {
+        $('#message-'+pk).remove();
       }
     };
 

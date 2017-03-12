@@ -1,0 +1,12 @@
+<li id="message-{{ message.pk }}" class="{% if user.pk == message.user.pk %}right{% else %}left{% endif %} clearfix message {% if not message %}hidden-xs-up{% endif %}">
+    <span class="chat-img float-{% if user.pk == message.user.pk %}right{% else %}left{% endif %}">
+        <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+    </span>
+    <div class="chat-body clearfix">
+        <div class="header text-{% if user.pk == message.user.pk %}right{% else %}left{% endif %}">
+            <strong class="username primary-font">{{ message.user.username }}</strong>
+            <small class="float-{% if user.pk == message.user.pk %}left{% else %}right{% endif %} text-muted"><time class="date" datetime="{{ message.date }}">{{ message.date|timesince }}</time> ago</small>
+        </div>
+        <p class="text text-{% if user.pk == message.user.pk %}right{% else %}left{% endif %}">{{ message.text }}</p>
+    </div>
+</li>
