@@ -1,0 +1,7 @@
+.idea/
+db.sqlite3
+node_modules/
+staticfiles/
+media/
+chat/settings.py
+*.pyc

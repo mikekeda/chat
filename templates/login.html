@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="jumbotron">
+  <form action="{% url 'core:login' %}" method="post" class="">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+        <div class="col-sm-9">
+        {{ field|add_class:"form-control" }}
+        </div>
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary float-right">{% trans "Log in" %}</button>
+  </form>
+
+
+  <a href="{% url 'social:begin' 'facebook' %}">{% trans "Login with Facebook" %}</a>
+  <p>{% trans "Don't have an account?" %} <a href="{% url 'core:signup' %}">{% trans "Sign up!" %}</a></p>
+  </div>
+{% endblock content %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <div class="jumbotron">
+
+  <ul class="list-group">
+    {% for user in users %}
+      <!-- NOTE: We escape HTML to prevent XSS attacks. -->
+      <li data-username="{{ user.username|escape }}" class="list-group-item justify-content-between">
+        <a href="{% url 'core:user' user.username %}" class="name text-muted">{{ user.username|escape }}</a>
+        <span class="status badge badge-default badge-pill {% if user.status %}badge-success{% endif %}">
+          {% if user.status %}Online{% else %}Offline{% endif %}
+        </span>
+      </li>
+    {% endfor %}
+  </ul>
+  </div>
+{% endblock content %}
+
+{% block script %}
+  <script>
+    var socket = new WebSocket('ws://' + window.location.host + '/users/');
+
+    socket.onopen = function open() {
+      console.log('WebSockets connection created.');
+    };
+
+    socket.onmessage = function message(event) {
+      var data = JSON.parse(event.data);
+      // NOTE: We escape JavaScript to prevent XSS attacks.
+      var username = encodeURI(data['username']);
+      var $user = $('li').filter(function () {
+        return $(this).data('username') == username;
+      });
+
+      $user.find('.name').text(username);
+      if (data['is_logged_in']) {
+        $user.find('.status').addClass('badge-success').text('Online');
+      }
+      else {
+        $user.find('.status').removeClass('badge-success').text('Offline');
+      }
+    };
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
+{% endblock script %}

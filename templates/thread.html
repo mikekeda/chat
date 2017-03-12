@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <div class="jumbotron">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        {{ thread.name }}
+                    </div>
+                    <div class="panel-body">
+                        <ul class="chat">
+                            {% for message in messages %}
+                                <li id="message-{{ message.pk }}" class="left clearfix message">
+                                    <span class="chat-img pull-left">
+                                        <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">{{ message.user.username }}</strong>
+                                            <small class="date float-right text-muted">{{ message.date|timesince }}</small>
+                                        </div>
+                                        <p class="text">{{ message.text }}</p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning btn-sm" id="btn-chat">
+                                    Send</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block script %}
+  <script>
+    var socket = new WebSocket('ws://' + window.location.host + '/thread/' + {{ thread.id }});
+
+    socket.onopen = function open() {
+      console.log('WebSockets connection created.');
+    };
+
+    socket.onmessage = function message(event) {
+      var raw_data = JSON.parse(event.data);
+      var action = raw_data.payload.action;
+      var data = raw_data.payload.data;
+      var pk = raw_data.payload.pk;
+      var $message;
+
+      console.log(action);
+      console.log(data);
+      console.log(pk);
+
+      // Update.
+      if (action == 'update') {
+        $message = $('#message-'+pk);
+        $message.find('.text').text(data.text);
+      }
+    };
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
+{% endblock script %}
