@@ -39,6 +39,14 @@
   <script>
     var users = {% autoescape off %}{{ users }}{% endautoescape %} ;
     var socket = new WebSocket('ws://' + window.location.host + '/thread/' + {{ thread.id }});
+    var $input = $('#btn-input');
+
+    $('#btn-chat').click(function() {
+      socket.send(JSON.stringify({
+        text: $input.val()
+      }));
+      $input.val('');
+    });
 
     socket.onopen = function open() {
       console.log('WebSockets connection created.');
@@ -50,10 +58,6 @@
       var data = raw_data.payload.data;
       var pk = raw_data.payload.pk;
       var $message;
-
-      console.log(action);
-      console.log(data);
-      console.log(pk);
 
       // Update.
       if (action == 'update') {

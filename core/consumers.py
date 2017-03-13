@@ -31,9 +31,15 @@ def ws_disconnect(message):
 
 
 class WsThread(WebsocketDemultiplexer):
+    http_user = True
+
     consumers = {
         'messages': MessageBinding.consumer,
     }
 
     def connection_groups(self, thread):
         return ['thread-%s' % thread]
+
+    def receive(self, content, **kwargs):
+        print(self.message.user)
+        print(content)
