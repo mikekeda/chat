@@ -11,7 +11,7 @@
                     <div class="panel-heading">
                         <h4>{{ thread.name }}</h4>
                     </div>
-                    <div class="panel-body">
+                    <div id="chat-body" class="panel-body">
                         <ul id="messages" class="chat">
                             {% include "message.html" %}
                             {% for message in messages %}
@@ -37,15 +37,27 @@
 
 {% block script %}
   <script>
-    var users = {% autoescape off %}{{ users }}{% endautoescape %} ;
     var socket = new WebSocket('ws://' + window.location.host + '/thread/' + {{ thread.id }});
+    var users = {% autoescape off %}{{ users }}{% endautoescape %};
+    var user = {{ user.pk }};
     var $input = $('#btn-input');
+    var $chat = $('#chat-body');
+    var $message;
 
-    $('#btn-chat').click(function() {
+    function sendMessage() {
       socket.send(JSON.stringify({
         text: $input.val()
       }));
       $input.val('');
+    }
+
+    $chat.scrollTop($chat.prop('scrollHeight'));
+
+    $('#btn-chat').click(sendMessage);
+    $input.keypress(function(e) {
+      if (e.which == 13) {
+        sendMessage();
+      }
     });
 
     socket.onopen = function open() {
@@ -57,7 +69,6 @@
       var action = raw_data.payload.action;
       var data = raw_data.payload.data;
       var pk = raw_data.payload.pk;
-      var $message;
 
       // Update.
       if (action == 'update') {
@@ -67,7 +78,7 @@
 
       // Insert.
       if (action == 'create') {
-        $message = $('#message-').clone().removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
+        $message = $('#message-').clone().toggleClass('left', data.user != user).toggleClass('right', data.user == user).removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
         $message.find('.text').text(data.text);
         $message.find('.date').data('date', data.date).text('{% trans "Just now" %}');
         if (users.hasOwnProperty(data.user)) {
@@ -79,6 +90,7 @@
       if (action == 'delete') {
         $('#message-'+pk).remove();
       }
+      $chat.scrollTop($chat.prop('scrollHeight'));
     };
 
     if (socket.readyState == WebSocket.OPEN) {

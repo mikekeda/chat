@@ -24,13 +24,33 @@
     color: #777777;
 }
 
-.panel .slidedown .glyphicon, .chat .glyphicon {
-    margin-right: 5px;
-}
-
 .panel-body {
     overflow-y: scroll;
     height: 80vh;
+}
+
+.message.left .chat-img {
+    float: left;
+}
+
+.message.right .chat-img {
+    float: right;
+}
+
+.message.right .header {
+    text-align: right;
+}
+
+.message.left .date-wrapper {
+    float: right;
+}
+
+.message.right .date-wrapper {
+    float: left;
+}
+
+.message.right .text {
+    text-align: right;
 }
 
 ::-webkit-scrollbar-track {

@@ -3,7 +3,7 @@ from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from channels.generic.websockets import WebsocketDemultiplexer
 
-from .models import MessageBinding
+from .models import Thread, Message, MessageBinding
 
 
 @channel_session_user_from_http
@@ -38,8 +38,11 @@ class WsThread(WebsocketDemultiplexer):
     }
 
     def connection_groups(self, thread):
-        return ['thread-%s' % thread]
+        if Thread.objects.filter(pk=thread, users=self.message.user):
+            return ['thread-%s' % thread]
+        return []
 
     def receive(self, content, **kwargs):
-        print(self.message.user)
-        print(content)
+        message = Message(thread_id=int(kwargs.get('thread')), user=self.message.user, text=content['text'])
+        if message.thread.users.filter(pk=message.user.pk):
+            message.save()
