@@ -37,7 +37,7 @@
 
 {% block script %}
   <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/thread/' + {{ thread.id }});
+    var socket = new WebSocket('ws://' + window.location.host + '/ws/thread/' + {{ thread.id }});
     var users = {% autoescape off %}{{ users }}{% endautoescape %};
     var user = {{ user.pk }};
     var $input = $('#btn-input');
