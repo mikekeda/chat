@@ -6,6 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="robots" content="none">
+  <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QMOFBUIlPIK7gAAAdxJREFUWMPll8FqFEEQhr/+K6IxqAgBEQ+LoiCKkJMH8RFE8RkEjyJ4M3mBHHwYjSdvQkAQYS+LohcTDWpQoyjioukqDzuDu8asG9nZPqSgT1PM93dVd1cV7HZLozqa7DRwBbgInAVagKrPAbwGOsByEEvu3hmLQpPdNtkHk8UO14bJ5tHomwRAUg2++R/Q7dat6p/DU2DJSCkdDOIRcGbM6X4OnCfxJee8VYCZQdCqHPc2dOZ+AqdIrNYiUh0ad5+V9AbY0/DBz+5+RNLH7Ll3irNnJD2ZALy3X6mdvRcBqyKwAFyd4PU/lFKKiHhYpyBKPELZczKTXQMulxCgpLcqBa/skoC5ggLmksm6Dd77f9mm6ptQyLKAdwUFrAtoFxTQFrBUUMC94g9R3dEsFODPD5Zj2UrVZk3CXmbPJwbKMXAYWJ9ARfwBHCXYyNFXjkl8cvw40G0Q3nX8JKkH39KSKQmZ9oXH9wbgnUS64OFfPfw3s99j2qYJjyaK043s+ZwzCP/rXGCyNeDYGKDvgTvZ8+Iwp6k/4NdHgN+vOuZWXx3ZBFaAp8AycDd7frGjWcBkB4b09d9Mtmiy/ePOzRSAu2OyepT6DLwCngXxmOCBx5jGrO1sRjO7dzr+BVtAwsorwcB8AAAAAElFTkSuQmCC" rel="icon" type="image/​png" />
   <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
   <title>{% trans "Chat room" %}</title>
@@ -51,8 +53,16 @@
     {% block content %}{% endblock content %}
   </div>
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/tether/dist/js/tether.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-74402136-5', 'auto');
+    ga('send', 'pageview');
+  </script>
   {% block script %}{% endblock script %}
 </body>
 </html>
