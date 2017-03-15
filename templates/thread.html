@@ -84,6 +84,11 @@
         if (users.hasOwnProperty(data.user)) {
           $message.find('.username').text(users[data.user]);
         }
+
+        // Confirm that message was read.
+        socket.send(JSON.stringify({
+          read: true,
+        }));
       }
 
       // Delete.

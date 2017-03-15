@@ -40,6 +40,18 @@ class Thread(models.Model):
         )
 
 
+class UnreadThread(models.Model):
+    thread = models.ForeignKey(Thread)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='unread_thread')
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return u'%s:%s' % (
+            self.thread.name,
+            self.user.username,
+        )
+
+
 class Message(models.Model):
     thread = models.ForeignKey(Thread, related_name='messages')
     user = models.ForeignKey(settings.AUTH_USER_MODEL)

@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^signup$', sign_up, name='signup'),
     url(r'^$', user_list, name='user_list'),
     url(r'^chat/(?P<username>.+)$', thread, name='user'),
+    url(r'^thread/(?P<thread_id>.+)$', thread, name='thread'),
 ]

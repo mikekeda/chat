@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.core.cache import cache
 
-from .models import Thread, Message
+from .models import Thread, UnreadThread, Message
 
 
 User = get_user_model()
@@ -14,13 +14,8 @@ User = get_user_model()
 
 @login_required
 def user_list(request):
-    """
-    NOTE: This is fine for demonstration purposes, but this should be
-    refactored before we deploy this app to production.
-    Imagine how 100,000 users logging in and out of our app would affect
-    the performance of this code!
-    """
-    users = User.objects.exclude(id=request.user.id).select_related('logged_in_user')
+    """User list."""
+    users = User.objects.exclude(id=request.user.id)
     for user in users:
         user.status = cache.get('seen_%s' % user.username)
 
@@ -28,18 +23,25 @@ def user_list(request):
 
 
 @login_required
-def thread(request, username):
+def thread(request, username=None, thread_id=None):
     """Thread page."""
     messages = []
     users = {}
-    user = get_object_or_404(User, username=username)
-    thread = Thread.objects.annotate(count=Count('users')).filter(users=request.user).filter(users=user).filter(count=2).first()
+    if username:
+        user = get_object_or_404(User, username=username)
+        thread = Thread.objects.annotate(count=Count('users')).filter(users=request.user).filter(users=user).filter(count=2).first()
+    elif thread_id:
+        thread = get_object_or_404(Thread, pk=thread_id)
+
     if not thread:
         thread = Thread(name=', '.join([request.user.username, username]))
         thread.save()
         thread.users.add(request.user, user)
     else:
-        messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:100]
+        # The user visited this tread - delete user's unread thread.
+        UnreadThread.objects.filter(thread=thread, user=request.user).delete()
+
+        messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:50]
         for message in messages:
             if message.user.pk not in users:
                 users[message.user.pk] = message.user.username
