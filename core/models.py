@@ -1,12 +1,27 @@
 from django.conf import settings
 from django.db import models
-from datetime import datetime
+from django.core.cache import cache
+import datetime
 from channels.binding.websockets import WebsocketBinding
 
 
-class LoggedInUser(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='logged_in_user')
+
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(
+                    seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
 
     def __str__(self):
         return u'%s' % (
@@ -32,7 +47,7 @@ class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        self.thread.last_message = datetime.now()
+        self.thread.last_message = datetime.datetime.now()
         self.thread.save()
         super(Message, self).save(*args, **kwargs)
 

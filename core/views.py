@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
-from django.core import serializers
+from django.core.cache import cache
 
 from .models import Thread, Message
 
@@ -22,7 +22,7 @@ def user_list(request):
     """
     users = User.objects.exclude(id=request.user.id).select_related('logged_in_user')
     for user in users:
-        user.status = hasattr(user, 'logged_in_user')
+        user.status = cache.get('seen_%s' % user.username)
 
     return render(request, 'user_list.html', {'users': users})
 
