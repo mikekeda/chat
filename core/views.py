@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.core.cache import cache
@@ -20,6 +20,14 @@ def user_list(request):
         user.status = cache.get('seen_%s' % user.username)
 
     return render(request, 'user_list.html', {'users': users})
+
+
+@login_required
+def profile(request, username):
+    """User profile."""
+    user = get_object_or_404(User, username=username)
+
+    return render(request, 'profile.html', {'user': user})
 
 
 @login_required
