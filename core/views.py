@@ -4,9 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
-from django.core.cache import cache
 
-from .models import Thread, UnreadThread, Message
+from .models import Profile, Thread, UnreadThread, Message
 
 
 User = get_user_model()
@@ -15,9 +14,12 @@ User = get_user_model()
 @login_required
 def user_list(request):
     """User list."""
-    users = User.objects.exclude(id=request.user.id)
+    users = User.objects.exclude(id=request.user.id).select_related('profile')
     for user in users:
-        user.status = cache.get('seen_%s' % user.username)
+        try:
+            user.status = user.profile.online()
+        except Profile.DoesNotExist:
+            user.status = False
 
     return render(request, 'user_list.html', {'users': users})
 

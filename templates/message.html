@@ -1,6 +1,6 @@
 <li id="message-{{ message.pk }}" class="{% if user.pk == message.user.pk %}right{% else %}left{% endif %} clearfix message {% if not message %}hidden-xs-up{% endif %}">
     <span class="chat-img">
-        <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+        <img src="{{ message.user.profile.avatar.url }}" width="50" height="50" alt="User Avatar" class="img-circle" />
     </span>
     <div class="chat-body clearfix">
         <div class="header">

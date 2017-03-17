@@ -50,7 +50,10 @@
       </li>
         {% url 'core:user' user.username as user_url %}
         <li class="nav-item {% if request.get_full_path == user_url %}active{% endif %}">
-          <a class="nav-link" href="{{ user_url }}">{{ user.username }}</a>
+          <a class="nav-link" href="{{ user_url }}">
+            <img src="{{ user.profile.avatar.url }}" height="20" width="20" alt="avatar">
+            {{ user.username }}
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'core:logout' %}">{% trans "Log out" %}</a>
