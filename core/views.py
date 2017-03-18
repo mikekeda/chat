@@ -68,9 +68,16 @@ def thread_view(request, username=None, thread_id=None):
     messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:50]
     for message in messages:
         if message.user.pk not in users:
+            try:
+                avatar = message.user.profile.avatar.url
+            except Profile.DoesNotExist:
+                # If there no user profile - create it.
+                profile, created = Profile.objects.get_or_create(user=message.user)
+                avatar = profile.avatar.url
+
             users[message.user.pk] = {
                 'username': message.user.username,
-                'avatar': message.user.profile.avatar.url,
+                'avatar': avatar,
             }
     for message in messages:
         message.avatar = users[message.user.pk]['avatar']
