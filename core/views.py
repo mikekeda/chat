@@ -4,9 +4,12 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
+from django.http import JsonResponse, HttpResponseRedirect, Http404
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 from .models import Profile, Thread, UnreadThread, Message
-
+from .forms import AvatarForm
 
 User = get_user_model()
 
@@ -25,42 +28,85 @@ def user_list(request):
 
 
 @login_required
-def profile(request, username):
+def profile_view(request, username):
     """User profile."""
     user = get_object_or_404(User, username=username)
+    form = AvatarForm(data=request.POST)
 
-    return render(request, 'profile.html', {'user': user})
+    return render(request, 'profile.html', {
+        'profile_user': user,
+        'is_current_user': user == request.user,
+        'form': form,
+    })
 
 
 @login_required
-def thread(request, username=None, thread_id=None):
+def thread_view(request, username=None, thread_id=None):
     """Thread page."""
-    messages = []
-    users = {}
     if username:
         user = get_object_or_404(User, username=username)
-        thread = Thread.objects.annotate(count=Count('users')).filter(users=request.user).filter(users=user).filter(count=2).first()
+        thread = Thread.objects\
+            .annotate(count=Count('users'))\
+            .filter(users=request.user)\
+            .filter(users=user)\
+            .filter(count=2)\
+            .first()
+        if not thread:
+            thread = Thread(name=', '.join([request.user.username, username]))
+            thread.save()
+            thread.users.add(request.user, user)
     elif thread_id:
         thread = get_object_or_404(Thread, pk=thread_id)
-
-    if not thread:
-        thread = Thread(name=', '.join([request.user.username, username]))
-        thread.save()
-        thread.users.add(request.user, user)
     else:
-        # The user visited this tread - delete user's unread thread.
-        UnreadThread.objects.filter(thread=thread, user=request.user).delete()
+        # username or thread_id should be passed.
+        raise Http404
 
-        messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:50]
-        for message in messages:
-            if message.user.pk not in users:
-                users[message.user.pk] = message.user.username
+    # The user visited this tread - delete user's unread thread.
+    UnreadThread.objects.filter(thread=thread, user=request.user).delete()
+
+    users = {}
+    messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:50]
+    for message in messages:
+        if message.user.pk not in users:
+            users[message.user.pk] = {
+                'username': message.user.username,
+                'avatar': message.user.profile.avatar.url,
+            }
+    for message in messages:
+        message.avatar = users[message.user.pk]['avatar']
 
     return render(request, 'thread.html', {
         'thread': thread,
         'messages': messages,
         'users': users,
     })
+
+
+@login_required
+def update_profile(request):
+    """Update user."""
+    if request.method == 'POST':
+        avatar = request.FILES.get('avatar', '')
+        if avatar:
+            profile = get_object_or_404(Profile, user=request.user)
+            form = AvatarForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            allowed_fields = ['first_name', 'last_name', 'email']
+            field = request.POST.get('name', '')
+            value = request.POST.get('value', '')
+            if field and field in allowed_fields:
+                setattr(request.user, field, value)
+                try:
+                    request.user.clean_fields()
+                    request.user.save()
+                    return JsonResponse({'success': True})
+                except ValidationError as e:
+                    return JsonResponse(', '.join(e.message_dict[field]), safe=False, status=422)
+
+    return JsonResponse(_("You can't change this field"), safe=False, status=403)
 
 
 def log_in(request):

@@ -8,9 +8,8 @@
 
   <ul class="list-group">
     {% for user in users %}
-      <!-- NOTE: We escape HTML to prevent XSS attacks. -->
-      <li data-username="{{ user.username|escape }}" class="list-group-item justify-content-between">
-        <a href="{% url 'core:chat' user.username %}" class="name text-muted">{{ user.username|escape }}</a>
+      <li data-username="{{ user.username }}" class="list-group-item justify-content-between">
+        <a href="{% url 'core:chat' user.username %}" class="name text-muted">{{ user.username }}</a>
         <span class="status badge badge-default badge-pill {% if user.status %}badge-success{% endif %}">
           {% if user.status %}Online{% else %}Offline{% endif %}
         </span>

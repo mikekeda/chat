@@ -3,13 +3,12 @@ from django.db import models
 from django.core.cache import cache
 import datetime
 from channels.binding.websockets import WebsocketBinding
-import os
 
 
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='profile')
-    avatar = models.ImageField(upload_to='avatars/', default=os.path.join(settings.STATIC_URL, 'avatars/no-avatar.svg'))
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/no-avatar.svg')
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)

@@ -1,10 +1,12 @@
 <li id="message-{{ message.pk }}" class="{% if user.pk == message.user.pk %}right{% else %}left{% endif %} clearfix message {% if not message %}hidden-xs-up{% endif %}">
     <span class="chat-img">
-        <img src="{{ message.user.profile.avatar.url }}" width="50" height="50" alt="User Avatar" class="img-circle" />
+        <img src="{{ message.avatar }}" width="50" height="50" alt="User Avatar" class="avatar" />
     </span>
     <div class="chat-body clearfix">
         <div class="header">
-            <strong class="username primary-font">{{ message.user.username }}</strong>
+            <a href="{% if message.user.username %}{% url 'core:user' message.user.username %}{% else %}{% url 'core:user' 'dummy' %}{% endif %}" class="text-muted profile-link">
+                <strong class="username primary-font">{{ message.user.username }}</strong>
+            </a>
             <small class="text-muted date-wrapper"><time class="date" datetime="{{ message.date }}">{{ message.date|timesince }}</time> ago</small>
         </div>
         <p class="text">{{ message.text }}</p>
