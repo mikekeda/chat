@@ -21,7 +21,8 @@
 
 {% block script %}
   <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/ws/users/');
+    var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    var socket = new WebSocket(protocol + '://' + window.location.host + '/ws/users/');
 
     socket.onopen = function open() {
       console.log('WebSockets connection created.');

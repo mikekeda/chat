@@ -39,7 +39,8 @@
 
 {% block script %}
   <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/ws/thread/' + {{ thread.id }});
+    var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    var socket = new WebSocket(protocol + '://' + window.location.host + '/ws/thread/' + {{ thread.id }});
     var users = {% autoescape off %}{{ users }}{% endautoescape %};
     var user = {{ user.pk }};
     var $input = $('#btn-input');
