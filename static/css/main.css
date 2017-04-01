@@ -24,6 +24,10 @@
     color: #777777;
 }
 
+.jumbotron {
+    margin-top: 50px;
+}
+
 .thread-jumbotron {
     margin-bottom: 0;
 }
