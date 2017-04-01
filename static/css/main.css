@@ -24,9 +24,17 @@
     color: #777777;
 }
 
+.thread-jumbotron {
+    margin-bottom: 0;
+}
+
 .panel-body {
     overflow-y: scroll;
-    height: 80vh;
+    height: calc(100vh - 200px);
+}
+
+#video {
+    max-width: 100%;
 }
 
 .message.left .chat-img {

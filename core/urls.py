@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.conf import settings
 
-from .views import log_in, log_out, sign_up, user_list, thread_view, profile_view, update_profile
+from .views import log_in, log_out, sign_up, user_list, thread_view, call_view, profile_view, update_profile
 
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^user/(?P<username>.+)$', profile_view, name='user'),
     url(r'^chat/(?P<username>.+)$', thread_view, name='chat'),
     url(r'^thread/(?P<thread_id>.+)$', thread_view, name='thread'),
+    url(r'^call/(?P<username>.+)$', call_view, name='call'),
     url(r'^update-profile$', update_profile, name='update_profile'),
 ]
 

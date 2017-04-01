@@ -43,18 +43,19 @@ def profile_view(request, username):
 @login_required
 def thread_view(request, username=None, thread_id=None):
     """Thread page."""
+    interlocutor = None
     if username:
-        user = get_object_or_404(User, username=username)
+        interlocutor = get_object_or_404(User, username=username)
         thread = Thread.objects\
             .annotate(count=Count('users'))\
             .filter(users=request.user)\
-            .filter(users=user)\
+            .filter(users=interlocutor)\
             .filter(count=2)\
             .first()
         if not thread:
             thread = Thread(name=', '.join([request.user.username, username]))
             thread.save()
-            thread.users.add(request.user, user)
+            thread.users.add(request.user, interlocutor)
     elif thread_id:
         thread = get_object_or_404(Thread, pk=thread_id)
     else:
@@ -86,6 +87,17 @@ def thread_view(request, username=None, thread_id=None):
         'thread': thread,
         'messages': messages,
         'users': users,
+        'interlocutor': interlocutor,
+    })
+
+
+@login_required
+def call_view(request, username):
+    """Call page."""
+    interlocutor = get_object_or_404(User, username=username)
+
+    return render(request, 'call.html', {
+        'interlocutor': interlocutor,
     })
 
 
