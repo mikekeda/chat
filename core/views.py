@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse
@@ -160,7 +160,12 @@ def sign_up(request):
         form = UserCreationForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('core:login'))
+            user = authenticate(username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password1'],
+                                )
+            login(request, user)
+
+            return redirect(reverse('core:user_list'))
         else:
             print(form.errors)
 
