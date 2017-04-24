@@ -11,7 +11,11 @@
             <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4>{{ thread.name }}{% if interlocutor %}<a href="{% url 'core:call' interlocutor.username %}" class="float-right">☎</a>{% endif %}</h4>
+                        <h4 class="clearfix">
+                            {{ thread.name }}{% if interlocutor %}
+                                <a href="{% url 'core:call' interlocutor.username %}" class="h2 float-right">☎</a>
+                            {% endif %}
+                        </h4>
                     </div>
                     <div id="chat-body" class="panel-body">
                         <ul id="messages" class="chat">
