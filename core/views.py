@@ -66,6 +66,13 @@ def thread_view(request, username=None, thread_id=None):
     UnreadThread.objects.filter(thread=thread, user=request.user).delete()
 
     users = {}
+    for user in thread.users.all():
+        profile, created = Profile.objects.get_or_create(user=user)
+        users[user.pk] = {
+            'username': user.username,
+            'avatar': profile.avatar.url,
+        }
+
     messages = Message.objects.select_related('user').filter(thread=thread).order_by('date')[:50]
     for message in messages:
         if message.user.pk not in users:
