@@ -5,23 +5,22 @@
 
 {% block content %}
   <div class="jumbotron">
-
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4>{{ interlocutor.username }}</h4>
-                    </div>
-                    <div id="call-body">
-                        <video id="video" muted="muted"></video>
-                    </div>
-                </div>
-                <button id="video-button" class="right" type="button">{% trans "Start video call" %}</button>
-            </div>
-            </div>
-        </div>
-    </div>
+      <div class="container">
+          <div class="row">
+              <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading">
+                          <h4>{{ interlocutor.username }}</h4>
+                      </div>
+                      <div id="call-body">
+                          <video id="video" muted="muted"></video>
+                      </div>
+                  </div>
+                  <button id="video-button" class="right" type="button">{% trans "Start video call" %}</button>
+              </div>
+              </div>
+          </div>
+      </div>
   </div>
 {% endblock content %}
 
