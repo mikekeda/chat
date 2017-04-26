@@ -25,30 +25,30 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="{% url 'core:user_list' %}">Chat</a>
+    <a class="navbar-brand" href="{% url 'core:user_list' %}">{% trans "Chat" %}</a>
 
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
         {% url 'core:user_list' as user_list_url %}
         <li class="nav-item {% if request.get_full_path == user_list_url %}active{% endif %}">
-          <a class="nav-link" href="{{ user_list_url }}">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{{ user_list_url }}">{% trans "Home" %} <span class="sr-only">({% trans "current" %})</span></a>
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
         {% if user.is_authenticated %}
         <li class="nav-item dropdown">
-        <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <svg class="icon">
-            <use xlink:href="#chat-icon" />
-          </svg>
-           {% if unread_threads %}<span class="badge badge-pill badge-danger">{{ unread_threads }}</span>{% endif %}
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-          {% for thread in threads %}
-          <a class="dropdown-item" href="{% url 'core:thread' thread.0 %}">{{ thread.1 }}</a>
-          {% endfor %}
-        </div>
-      </li>
+          <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <svg class="icon">
+              <use xlink:href="#chat-icon" />
+            </svg>
+             {% if unread_threads %}<span class="badge badge-pill badge-danger">{{ unread_threads }}</span>{% endif %}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+            {% for thread in threads %}
+            <a class="dropdown-item" href="{% url 'core:thread' thread.0 %}">{{ thread.1 }}</a>
+            {% endfor %}
+          </div>
+        </li>
         {% url 'core:user' user.username as user_url %}
         <li class="nav-item {% if request.get_full_path == user_url %}active{% endif %}">
           <a class="nav-link" href="{{ user_url }}">
@@ -61,11 +61,11 @@
         </li>
         {% else %}
         {% url 'core:signup' as signup_url %}
-        <li class="nav-item {% if request.get_full_path == signup_url %}active{% endif %}">
+        <li class="nav-item {% if request.path == signup_url %}active{% endif %}">
           <a class="nav-link" href="{{ signup_url }}">{% trans "Sign up" %}</a>
         </li>
         {% url 'core:login' as login_url %}
-        <li class="nav-item {% if request.get_full_path == login_url %}active{% endif %}">
+        <li class="nav-item {% if request.path == login_url %}active{% endif %}">
           <a class="nav-link" href="{{ login_url }}">{% trans "Log in" %}</a>
         </li>
         {% endif %}
