@@ -4,7 +4,7 @@
 {% block title %}{% trans "Tread" %} {{ thread.name }}{% endblock title %}
 
 {% block content %}
-  <div class="jumbotron thread-jumbotron">
+  <div class="jumbotron thread-jumbotron bg-white">
 
     <div class="container">
         <div class="row">
@@ -17,7 +17,7 @@
                             {% endif %}
                         </h4>
                     </div>
-                    <div id="chat-body" class="panel-body">
+                    <div id="chat-body" class="panel-body bg-faded p-2">
                         <ul id="messages" class="chat">
                             {% include "message.html" %}
                             {% for message in messages %}

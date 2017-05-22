@@ -142,8 +142,6 @@ def log_in(request):
         if form.is_valid():
             login(request, form.get_user())
             return redirect(reverse('core:user_list'))
-        else:
-            print(form.errors)
 
     return render(request, 'login.html', {'form': form})
 

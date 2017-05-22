@@ -8,7 +8,7 @@ from channels.binding.websockets import WebsocketBinding
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='profile')
-    avatar = models.ImageField(upload_to='avatars/', default='avatars/no-avatar.svg')
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/no-avatar.png')
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)

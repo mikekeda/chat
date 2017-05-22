@@ -5,7 +5,7 @@
 {% block title %}{% trans "Profile" %}{% endblock title %}
 
 {% block content %}
-<div class="jumbotron">
+<div class="jumbotron bg-white mt-5">
 <div class="row my-2">
         <div class="col-lg-8 push-lg-4">
             <ul class="nav nav-tabs">
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="col-lg-4 pull-lg-8 text-center">
-            <img src="{{ profile_user.profile.avatar.url }}" class="m-x-auto img-fluid img-circle" alt="avatar">
+            <img src="{{ profile_user.profile.avatar.url }}" class="m-x-auto img-fluid rounded-circle" alt="avatar">
             {% if is_current_user %}
             <h6 class="mt-2">{% trans "Upload a different photo" %}</h6>
             <form action="{% url 'core:update_profile' %}" method="post" enctype="multipart/form-data" id="avatar-upload">
