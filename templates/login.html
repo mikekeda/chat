@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-  <div class="jumbotron">
+  <div class="jumbotron mt-5">
   <form action="{% url 'core:login' %}" method="post" class="">
     {% csrf_token %}
     {% if form.non_field_errors %}
