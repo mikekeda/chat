@@ -22,6 +22,7 @@ def user_list(request):
         try:
             user.status = user.profile.online()
         except Profile.DoesNotExist:
+            Profile.objects.get_or_create(user=user)
             user.status = False
 
     return render(request, 'user_list.html', {'users': users})

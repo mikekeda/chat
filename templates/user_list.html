@@ -11,7 +11,9 @@
       <li data-username="{{ user.username }}" class="list-group-item justify-content-between">
         <a href="{% url 'core:chat' user.username %}" class="name text-muted">{{ user.username }}</a>
         <span class="status badge badge-default badge-pill {% if user.status %}badge-success{% endif %}">
-          {% if user.status %}Online{% else %}Offline{% endif %}
+          <a href="{% url 'core:user' user.username %}" class="text-white">
+            {% if user.status %}Online{% else %}Offline{% endif %}
+          </a>
         </span>
       </li>
     {% endfor %}
