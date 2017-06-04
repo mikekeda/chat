@@ -16,11 +16,8 @@ class Profile(models.Model):
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(
-                    seconds=settings.USER_ONLINE_TIMEOUT):
-                return False
-            else:
-                return True
+            return now < self.last_seen() + datetime.timedelta(
+                    seconds=settings.USER_ONLINE_TIMEOUT)
         else:
             return False
 
