@@ -8,7 +8,10 @@ from channels.binding.websockets import WebsocketBinding
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='profile')
-    avatar = models.ImageField(upload_to='avatars/', default='avatars/no-avatar.png')
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        default='avatars/no-avatar.png'
+    )
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
@@ -17,9 +20,10 @@ class Profile(models.Model):
         if self.last_seen():
             now = datetime.datetime.now()
             return now < self.last_seen() + datetime.timedelta(
-                    seconds=settings.USER_ONLINE_TIMEOUT)
-        else:
-            return False
+                seconds=settings.USER_ONLINE_TIMEOUT
+            )
+
+        return False
 
     def __str__(self):
         return u'%s' % (
@@ -29,7 +33,10 @@ class Profile(models.Model):
 
 class Thread(models.Model):
     name = models.CharField(max_length=255)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='threads')
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='threads'
+    )
     last_message = models.DateTimeField(null=True)
 
     def __str__(self):
@@ -40,7 +47,10 @@ class Thread(models.Model):
 
 class UnreadThread(models.Model):
     thread = models.ForeignKey(Thread)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='unread_thread')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='unread_thread'
+    )
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

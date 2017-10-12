@@ -131,9 +131,17 @@ def update_profile(request):
                     request.user.save()
                     return JsonResponse({'success': True})
                 except ValidationError as e:
-                    return JsonResponse(', '.join(e.message_dict[field]), safe=False, status=422)
+                    return JsonResponse(
+                        ', '.join(e.message_dict[field]),
+                        safe=False,
+                        status=422
+                    )
 
-    return JsonResponse(_("You can't change this field"), safe=False, status=403)
+    return JsonResponse(
+        _("You can't change this field"),
+        safe=False,
+        status=403
+    )
 
 
 def log_in(request):
@@ -159,13 +167,12 @@ def sign_up(request):
         form = UserCreationForm(data=request.POST)
         if form.is_valid():
             form.save()
-            user = authenticate(username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password1'],
-                                )
+            user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password1']
+            )
             login(request, user)
 
             return redirect(reverse('core:user_list'))
-        else:
-            print(form.errors)
 
     return render(request, 'signup.html', {'form': form})

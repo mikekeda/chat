@@ -45,13 +45,24 @@ class WsThread(WebsocketDemultiplexer):
     def receive(self, content, **kwargs):
         if 'text' in content:
             thread_id = int(kwargs.get('thread'))
-            message = Message(thread_id=thread_id, user=self.message.user, text=content['text'])
+            message = Message(
+                thread_id=thread_id,
+                user=self.message.user,
+                text=content.get('text')
+            )
             if message and message.thread.users.filter(pk=message.user.pk):
                 message.save()
 
-                # Create unread thread for each user in thread (we will delete it latter).
+                # Create unread thread for each user in thread,
+                # we will delete it latter.
                 for user in message.thread.users.all():
-                    UnreadThread.objects.get_or_create(thread_id=thread_id, user=user)
+                    UnreadThread.objects.get_or_create(
+                        thread_id=thread_id,
+                        user=user
+                    )
         elif 'read' in content:
             # The message was delivered - delete user's unread thread.
-            UnreadThread.objects.filter(thread_id=int(kwargs.get('thread')), user=self.message.user).delete()
+            UnreadThread.objects.filter(
+                thread_id=int(kwargs.get('thread')),
+                user=self.message.user
+            ).delete()
