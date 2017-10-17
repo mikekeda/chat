@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.conf import settings
 
-from .views import log_in, log_out, sign_up, user_list, thread_view, call_view, profile_view, update_profile
+from .views import (log_in, log_out, sign_up, user_list, thread_view,
+                    call_view, profile_view, update_profile)
 
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
