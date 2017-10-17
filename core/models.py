@@ -71,7 +71,8 @@ class Message(models.Model):
              update_fields=None):
         self.thread.last_message = datetime.datetime.now()
         self.thread.save()
-        super(Message, self).save(*args, **kwargs)
+        super(Message, self).save(force_insert=False, force_update=False,
+                                  using=None, update_fields=None)
 
     def __str__(self):
         return u'%s: %s' % (
