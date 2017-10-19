@@ -195,7 +195,7 @@ LOGIN_URL = 'core:login'
 
 LOGOUT_URL = 'core:logout'
 
-LOGIN_REDIRECT_URL = 'http://chat.mkeda.me'
+LOGIN_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://chat.mkeda.me'
 

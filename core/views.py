@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from .models import Profile, Thread, UnreadThread, Message
 from .forms import AvatarForm
@@ -146,6 +147,8 @@ def update_profile(request):
 
 
 def log_in(request):
+    if request.user.is_authenticated():
+        return redirect(settings.LOGIN_REDIRECT_URL)
     form = AuthenticationForm()
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -163,6 +166,8 @@ def log_out(request):
 
 
 def sign_up(request):
+    if request.user.is_authenticated():
+        return redirect(settings.LOGIN_REDIRECT_URL)
     form = UserCreationForm()
     if request.method == 'POST':
         form = UserCreationForm(data=request.POST)

@@ -1,5 +1,6 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import TestCase
 
 
 class LoanedBookInstancesByUserListViewTest(TestCase):
@@ -17,3 +18,24 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'user_list.html')
+
+    def test_login_page(self):
+        resp = self.client.get('/login')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'login.html')
+
+    def test_signup_page(self):
+        resp = self.client.get('/signup')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'signup.html')
+
+    # Pages available only for registered users.
+    def test_profile_page(self):
+        resp = self.client.get(reverse('core:user',
+                                       kwargs={'username': 'testuser'}))
+        self.assertRedirects(resp, '/login?next=/user/testuser')
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:user',
+                                       kwargs={'username': 'testuser'}))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'profile.html')
