@@ -43,7 +43,8 @@ class WsThread(WebsocketDemultiplexer):
         disconnect. Make sure to return a list/tuple, not a string!
         """
         thread = kwargs.get('thread')
-        if thread and Thread.objects.filter(pk=thread, users=self.message.user):
+        if thread and \
+                Thread.objects.filter(pk=thread, users=self.message.user):
             return ['thread-{}'.format(str(thread))]
         return []
 
