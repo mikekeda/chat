@@ -91,4 +91,7 @@ class MessageBinding(WebsocketBinding):
         return ['thread-%s' % instance.thread.pk]
 
     def has_permission(self, user, action, pk):
-        return user in self.users
+        if action == 'create':
+            return True
+
+        return user.is_superuser
