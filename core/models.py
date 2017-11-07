@@ -88,9 +88,18 @@ class MessageBinding(WebsocketBinding):
 
     @classmethod
     def group_names(cls, instance):
+        """
+        Returns the iterable of group names to send the object to based on the
+        instance and action performed on it.
+        """
         return ['thread-%s' % instance.thread.pk]
 
     def has_permission(self, user, action, pk):
+        """
+        Return True if the user can do action to the pk, False if not.
+        User may be AnonymousUser if no auth hooked up/they're not logged in.
+        Action is one of "create", "delete", "update".
+        """
         if action == 'create':
             return True
 

@@ -37,7 +37,11 @@ class WsThread(WebsocketDemultiplexer):
         'messages': MessageBinding.consumer,
     }
 
-    def connection_groups(self, thread):
+    def connection_groups(self, thread, **kwargs):
+        """
+        Group(s) to make people join when they connect and leave when they
+        disconnect. Make sure to return a list/tuple, not a string!
+        """
         if Thread.objects.filter(pk=thread, users=self.message.user):
             return ['thread-%s' % thread]
         return []
