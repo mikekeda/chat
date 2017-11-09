@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.test import TestCase
 
 
@@ -23,14 +24,31 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         self.assertTemplateUsed(resp, 'user_list.html')
 
     def test_login_page(self):
-        resp = self.client.get('/login')
+        resp = self.client.get(reverse('core:login'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'login.html')
 
+        # Try to login again (fail).
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:login'))
+        self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
+
     def test_signup_page(self):
-        resp = self.client.get('/signup')
+        resp = self.client.get(reverse('core:signup'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'signup.html')
+
+        # Try to login again (fail).
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:signup'))
+        self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
+
+    def test_logout_page(self):
+        resp = self.client.get(reverse('core:logout'))
+        self.assertRedirects(resp, '/login?next=/logout')
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:logout'))
+        self.assertRedirects(resp, reverse('core:login'))
 
     # Pages available only for registered users.
     def test_profile_page(self):
