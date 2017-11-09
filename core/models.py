@@ -14,17 +14,17 @@ class Profile(models.Model):
         default='avatars/no-avatar.png'
     )
 
-    def last_seen(self):
-        return cache.get('seen_%s' % self.user.username)
-
     def online(self):
-        if self.last_seen():
-            now = datetime.datetime.now()
-            return now < self.last_seen() + datetime.timedelta(
-                seconds=settings.USER_ONLINE_TIMEOUT
-            )
+        """Check if user is online (if Redis still has key 'seen_username')."""
+        return cache.get('seen_{}'.format(self.user.username))
 
-        return False
+    @staticmethod
+    def get_online_users():
+        """Return a list of usernames of online users."""
+        return [
+            key[len('seen_'):]
+            for key in cache.keys('seen_*')  # pattern is 'seen_username'
+        ]
 
     def __str__(self):
         return u'%s' % (

@@ -76,6 +76,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'social_django.middleware.SocialAuthExceptionMiddleware',
+
+    'core.middleware.active_user_middleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -137,12 +139,16 @@ CACHES = {
     }
 }
 
-# Number of seconds of inactivity before a user is marked offline
-USER_ONLINE_TIMEOUT = 300
+# CELERY STUFF
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
-# Number of seconds that we will keep track of inactive users for before
-# their last seen is removed from the cache
-USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+# Number of seconds of inactivity before a user is marked offline
+USER_ONLINE_TIMEOUT = 2 * 60  # 2 minutes
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
