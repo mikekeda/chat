@@ -18,13 +18,8 @@ User = get_user_model()
 @login_required
 def user_list(request):
     """User list."""
-    users = User.objects.exclude(id=request.user.id).select_related('profile')
-    for user in users:
-        try:
-            user.status = user.profile.online()
-        except Profile.DoesNotExist:
-            Profile.objects.get_or_create(user=user)
-            user.status = False
+    users = User.objects.exclude(id=request.user.id).values_list('username')
+    users = [user[0] for user in users]
 
     return render(request, 'user_list.html', {'users': users})
 
