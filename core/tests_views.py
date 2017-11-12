@@ -8,10 +8,10 @@ from django.test import TestCase
 
 class ChatViewTest(TestCase):
     def setUp(self):
-        # No need to set cache seen for test user.
-        patcher_cache = mock.patch('core.middleware.cache')
-        self.mock_cache = patcher_cache.start()
-        self.addCleanup(patcher_cache.stop)
+        # No need to set cache seen for tests users for testing views.
+        view_patcher_cache = mock.patch('core.middleware.cache')
+        self.mock_cache = view_patcher_cache.start()
+        self.addCleanup(view_patcher_cache.stop)
         # Create usual user.
         test_user = User.objects.create_user(username='testuser',
                                              password='12345')
