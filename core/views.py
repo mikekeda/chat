@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext
 from django.conf import settings
 
 from .models import Profile, Thread, UnreadThread, Message
@@ -18,8 +18,8 @@ User = get_user_model()
 @login_required
 def user_list(request):
     """User list."""
-    users = User.objects.exclude(id=request.user.id).values_list('username')
-    users = [user[0] for user in users]
+    users = User.objects.exclude(id=request.user.id)\
+        .values_list('username', flat=True).order_by('username')
 
     return render(request, 'user_list.html', {'users': users})
 
@@ -62,6 +62,7 @@ def thread_view(request, username=None, thread_id=None):
     # The user visited this tread - delete user's unread thread.
     UnreadThread.objects.filter(thread=thread, user=request.user).delete()
 
+    # Prepare usernames and user avatars.
     users = {}
     for user in thread.users.all():
         profile, _ = Profile.objects.get_or_create(user=user)
@@ -70,6 +71,7 @@ def thread_view(request, username=None, thread_id=None):
             'avatar': profile.avatar.url,
         }
 
+    # Get last 50 messages.
     messages = Message.objects.select_related('user').filter(thread=thread)\
                       .order_by('date')[:50]
     for message in messages:
@@ -85,6 +87,7 @@ def thread_view(request, username=None, thread_id=None):
                 'username': message.user.username,
                 'avatar': avatar,
             }
+    # Now we have all needed info - update messages.
     for message in messages:
         message.avatar = users[message.user.pk]['avatar']
 
@@ -135,7 +138,7 @@ def update_profile(request):
                     )
 
     return JsonResponse(
-        _("You can't change this field"),
+        ugettext("You can't change this field"),
         safe=False,
         status=403
     )

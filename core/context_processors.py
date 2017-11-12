@@ -2,23 +2,19 @@ from .models import Thread, UnreadThread
 
 
 def unread_threads(request):
-    """Arrival date."""
+    """Get unread messages."""
     threads = []
     unread_threads_counter = 0
 
     if request.user.is_authenticated():
         threads = UnreadThread.objects.filter(user=request.user)\
-                      .select_related('thread').order_by('-date')[:10]
-        threads = [
-            (thread.thread.id, thread.thread.name)
-            for thread in threads
-        ]
+            .order_by('-date').values_list('thread__id', 'thread__name')[:10]
+
         unread_threads_counter = len(threads)
 
         # If there no unread_threads_counter - show last threads.
         if not threads:
             threads = Thread.objects.filter(users=request.user)\
-                          .order_by('-last_message')[:10]
-            threads = [(thread.id, thread.name) for thread in threads]
+                .order_by('-last_message').values_list('id', 'name')[:10]
 
-    return {'threads': threads, 'unread_threads': unread_threads_counter}
+    return {'threads': list(threads), 'unread_threads': unread_threads_counter}

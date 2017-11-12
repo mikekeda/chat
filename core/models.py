@@ -92,7 +92,7 @@ class MessageBinding(WebsocketBinding):
         Returns the iterable of group names to send the object to based on the
         instance and action performed on it.
         """
-        return ['thread-%s' % instance.thread.pk]
+        return ['thread-{}'.format(instance.thread.pk)]
 
     def has_permission(self, user, action, pk):
         """

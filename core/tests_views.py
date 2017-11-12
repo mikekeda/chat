@@ -1,11 +1,17 @@
+from unittest import mock
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.test import TestCase
 
 
-class LoanedBookInstancesByUserListViewTest(TestCase):
+class ChatViewTest(TestCase):
     def setUp(self):
+        # No need to set cache seen for test user.
+        patcher_cache = mock.patch('core.middleware.cache')
+        self.mock_cache = patcher_cache.start()
+        self.addCleanup(patcher_cache.stop)
         # Create usual user.
         test_user = User.objects.create_user(username='testuser',
                                              password='12345')
@@ -15,15 +21,15 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         test_user2.save()
 
     # Pages available for anonymous.
-    def test_home_page(self):
-        resp = self.client.get('/')
+    def test_views_user_list(self):
+        resp = self.client.get(reverse('core:user_list'))
         self.assertRedirects(resp, '/login?next=/')
         self.client.login(username='testuser', password='12345')
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'user_list.html')
 
-    def test_login_page(self):
+    def test_views_login(self):
         resp = self.client.get(reverse('core:login'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'login.html')
@@ -33,7 +39,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         resp = self.client.get(reverse('core:login'))
         self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
 
-    def test_signup_page(self):
+    def test_views_signup(self):
         resp = self.client.get(reverse('core:signup'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'signup.html')
@@ -43,7 +49,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         resp = self.client.get(reverse('core:signup'))
         self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
 
-    def test_logout_page(self):
+    def test_views_logout(self):
         resp = self.client.get(reverse('core:logout'))
         self.assertRedirects(resp, '/login?next=/logout')
         self.client.login(username='testuser', password='12345')
@@ -51,7 +57,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         self.assertRedirects(resp, reverse('core:login'))
 
     # Pages available only for registered users.
-    def test_profile_page(self):
+    def test_views_user(self):
         resp = self.client.get(reverse('core:user',
                                        kwargs={'username': 'testuser'}))
         self.assertRedirects(resp, '/login?next=/user/testuser')
@@ -61,7 +67,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'profile.html')
 
-    def test_update_profile(self):
+    def test_views_update_profile(self):
         resp = self.client.post(
             reverse('core:update_profile'),
             {'first_name': 'test1'}
@@ -123,7 +129,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
             '"You can\'t change this field"'
         )
 
-    def test_thread_page(self):
+    def test_views_chat(self):
         resp = self.client.get(reverse('core:chat',
                                        kwargs={'username': 'testuser2'}))
         self.assertRedirects(resp, '/login?next=/chat/testuser2')
@@ -146,7 +152,7 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
                                        kwargs={'thread_id': '2'}))
         self.assertEqual(resp.status_code, 404)
 
-    def test_call_page(self):
+    def test_views_call(self):
         resp = self.client.get(reverse('core:call',
                                        kwargs={'username': 'testuser2'}))
         self.assertRedirects(resp, '/login?next=/call/testuser2')
