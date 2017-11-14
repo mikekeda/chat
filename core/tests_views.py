@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.test import TestCase
 
+from .models import Thread
+
 
 class ChatViewTest(TestCase):
     def setUp(self):
@@ -141,7 +143,14 @@ class ChatViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'thread.html')
 
-        # Try to open the thread by id (our test tred have id 1)
+        # Check the database.
+        chat = Thread.objects\
+            .filter(users__username='testuser')\
+            .filter(users__username='testuser2')
+        self.assertEqual(len(chat), 1)
+        self.assertEqual(str(chat[0]), 'testuser, testuser2')
+
+        # Try to open the thread by id (our test tred have id 1).
         resp = self.client.get(reverse('core:thread',
                                        kwargs={'thread_id': '1'}))
         self.assertEqual(resp.status_code, 200)

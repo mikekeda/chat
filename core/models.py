@@ -27,9 +27,7 @@ class Profile(models.Model):
         ]
 
     def __str__(self):
-        return u'%s' % (
-            self.user.username,
-        )
+        return self.user.username
 
 
 class Thread(models.Model):
@@ -41,9 +39,7 @@ class Thread(models.Model):
     last_message = models.DateTimeField(null=True)
 
     def __str__(self):
-        return u'%s' % (
-            self.name,
-        )
+        return self.name
 
 
 class UnreadThread(models.Model):
@@ -55,10 +51,7 @@ class UnreadThread(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return u'%s:%s' % (
-            self.thread.name,
-            self.user.username,
-        )
+        return '{}:{}'.format(self.thread.name, self.user.username)
 
 
 class Message(models.Model):
@@ -75,10 +68,7 @@ class Message(models.Model):
                                   using=None, update_fields=None)
 
     def __str__(self):
-        return u'%s: %s' % (
-            self.user.username,
-            self.text[:100],
-        )
+        return '{}: {}'.format(self.user.username, self.text[:100])
 
 
 class MessageBinding(WebsocketBinding):

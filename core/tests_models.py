@@ -28,7 +28,8 @@ class ChatModelTest(TestCase):
         # Check if test_model_user1 are online.
         test_user = User.objects.get(username='test_model_user1')
         profile, _ = Profile.objects.get_or_create(user=test_user)
-        self.assertEqual(bool(profile.online()), True)
+        self.assertTrue(bool(profile.online()))
+        self.assertEqual(str(profile), 'test_model_user1')
 
         # Check a list of online users.
         result = Profile.get_online_users()
@@ -41,7 +42,8 @@ class ChatModelTest(TestCase):
         # Check if user are online.
         test_user = User.objects.get(username='test_model_user2')
         profile, _ = Profile.objects.get_or_create(user=test_user)
-        self.assertEqual(bool(profile.online()), True)
+        self.assertTrue(bool(profile.online()))
+        self.assertEqual(str(profile), 'test_model_user2')
 
         # Check a list of online users.
         result = Profile.get_online_users()
