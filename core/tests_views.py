@@ -150,7 +150,7 @@ class ChatViewTest(TestCase):
         self.assertEqual(len(chat), 1)
         self.assertEqual(str(chat[0]), 'testuser, testuser2')
 
-        # Try to open the thread by id (our test tred have id 1).
+        # Try to open the thread by id (our test thread have id 1).
         resp = self.client.get(reverse('core:thread',
                                        kwargs={'thread_id': '1'}))
         self.assertEqual(resp.status_code, 200)

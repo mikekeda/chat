@@ -17,4 +17,4 @@ def on_user_loggedin(sender, **kwargs):
 def on_user_logout(sender, **kwargs):
     user = kwargs.get('user')
     if user.is_authenticated():
-        cache.delete('seen_%s' % user.username)
+        cache.delete('seen_{}'.format(user.username))

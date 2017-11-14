@@ -18,7 +18,7 @@ def ws_connect(message):
 @channel_session_user
 def ws_disconnect(message):
     # for thread in message.channel_session['thread']:
-    #     Group("thread-%s" % thread).discard(message.reply_channel)
+    #     Group('thread-{}'.format(thread)).discard(message.reply_channel)
     Group('users').discard(message.reply_channel)
 
 
