@@ -4,6 +4,7 @@ from channels.auth import channel_session_user, channel_session_user_from_http
 from channels.generic.websockets import WebsocketDemultiplexer
 
 from .models import Profile, Thread, UnreadThread, Message, MessageBinding
+from .tasks import chatbot_response
 
 
 @channel_session_user_from_http
@@ -54,10 +55,14 @@ class WsThread(WebsocketDemultiplexer):
                 # Create unread thread for each user in thread,
                 # we will delete it latter.
                 for user in message.thread.users.all():
-                    UnreadThread.objects.get_or_create(
-                        thread_id=thread_id,
-                        user=user
-                    )
+                    if user.username == 'chatbot':
+                        # This is a message for chat bot.
+                        chatbot_response(thread_id, content.get('text'))
+                    else:
+                        UnreadThread.objects.get_or_create(
+                            thread_id=thread_id,
+                            user=user
+                        )
         elif 'read' in content:
             # The message was delivered - delete user's unread thread.
             UnreadThread.objects.filter(
