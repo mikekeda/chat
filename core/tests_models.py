@@ -18,8 +18,10 @@ class ChatModelTest(TestCase):
 
     # Pages available for anonymous.
     def test_models_profile(self):
+        # Note: We don't have separate Redis for tests.
         result = Profile.get_online_users()
-        self.assertEqual(result, [])
+        self.assertNotIn('test_model_user1', result)
+        self.assertNotIn('test_model_user2', result)
 
         # Go to any page to trigger active_user_middleware middleware.
         self.client.login(username='test_model_user1', password='12345')
@@ -33,7 +35,7 @@ class ChatModelTest(TestCase):
 
         # Check a list of online users.
         result = Profile.get_online_users()
-        self.assertEqual(result, ['test_model_user1'])
+        self.assertIn('test_model_user1', result)
 
         # Go to any page to trigger active_user_middleware middleware.
         self.client.login(username='test_model_user2', password='12345')
@@ -47,7 +49,9 @@ class ChatModelTest(TestCase):
 
         # Check a list of online users.
         result = Profile.get_online_users()
-        self.assertEqual(len(result), 2)
+        self.assertGreaterEqual(len(result), 2)
+        self.assertIn('test_model_user1', result)
+        self.assertIn('test_model_user2', result)
 
         # Clean up the cache.
         cache.delete('seen_{}'.format('test_model_user1'))
