@@ -3,6 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import models
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from channels.binding.websockets import WebsocketBinding
 
 
@@ -13,6 +14,15 @@ class Profile(models.Model):
         upload_to='avatars/',
         default='avatars/no-avatar.png'
     )
+
+    def preview(self):
+        return '<img src="{}{}" width="150" height="150" />'.format(
+            settings.MEDIA_URL,
+            self.avatar
+        )
+
+    preview.short_description = 'Avatar preview'
+    preview.allow_tags = True
 
     def online(self):
         """Check if user is online (if Redis still has key 'seen_username')."""
@@ -38,6 +48,15 @@ class Thread(models.Model):
     )
     last_message = models.DateTimeField(null=True)
 
+    def link_to_thread(self):
+        return '<a href="{}">{}</a>'.format(
+            reverse('core:thread', kwargs={'thread_id': self.pk}),
+            self.name
+        )
+
+    link_to_thread.short_description = 'Link to thread'
+    link_to_thread.allow_tags = True
+
     def __str__(self):
         return self.name
 
@@ -50,8 +69,17 @@ class UnreadThread(models.Model):
     )
     date = models.DateTimeField(auto_now_add=True)
 
+    def link_to_thread(self):
+        return '<a href="{}">{}</a>'.format(
+            reverse('core:thread', kwargs={'thread_id': self.thread.pk}),
+            self.thread.name
+        )
+
+    link_to_thread.short_description = 'Link to thread'
+    link_to_thread.allow_tags = True
+
     def __str__(self):
-        return '{}:{}'.format(self.thread.name, self.user.username)
+        return '{}: {}'.format(self.thread.name, self.user.username)
 
 
 class Message(models.Model):
@@ -59,6 +87,15 @@ class Message(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+
+    def link_to_thread(self):
+        return '<a href="{}">{}</a>'.format(
+            reverse('core:thread', kwargs={'thread_id': self.thread.pk}),
+            self.thread.name
+        )
+
+    link_to_thread.short_description = 'Link to thread'
+    link_to_thread.allow_tags = True
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
