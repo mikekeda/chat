@@ -27,8 +27,9 @@ chatbot = ChatBot(
 # Train chatbot.
 chatbot.train(
     "chatterbot.corpus.english",
-    "chatterbot.corpus.english.greetings",
-    "chatterbot.corpus.english.conversations"
+    "chatterbot.corpus.spanish",
+    "chatterbot.corpus.italian",
+    "chatterbot.corpus.russian"
 )
 
 
