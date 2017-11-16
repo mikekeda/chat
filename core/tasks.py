@@ -24,14 +24,12 @@ chatbot = ChatBot(
     trainer='chatterbot.trainers.ChatterBotCorpusTrainer'
 )
 
-# Train based on the english corpus
-chatbot.train("chatterbot.corpus.english")
-
-# Train based on english greetings corpus
-chatbot.train("chatterbot.corpus.english.greetings")
-
-# Train based on the english conversations corpus
-chatbot.train("chatterbot.corpus.english.conversations")
+# Train chatbot.
+chatbot.train(
+    "chatterbot.corpus.english",
+    "chatterbot.corpus.english.greetings",
+    "chatterbot.corpus.english.conversations"
+)
 
 
 @app.task
