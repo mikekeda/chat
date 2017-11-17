@@ -29,6 +29,7 @@ chatbot.train(
     "chatterbot.corpus.english",
     "chatterbot.corpus.spanish",
     "chatterbot.corpus.italian",
+    "chatterbot.corpus.french",
     "chatterbot.corpus.russian"
 )
 
