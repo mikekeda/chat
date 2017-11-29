@@ -51,11 +51,11 @@ class ProfileView(View, GetUserMixin):
             return redirect_to_login(request.path)
 
         form = AvatarForm(data=request.POST)
+        is_editing_allowed = user == request.user or request.user.is_superuser
 
         return render(request, 'profile.html', {
             'profile_user': user,
-            'is_editing_allowed': user == request.user or
-            request.user.is_superuser,
+            'is_editing_allowed': is_editing_allowed,
             'form': form,
         })
 
