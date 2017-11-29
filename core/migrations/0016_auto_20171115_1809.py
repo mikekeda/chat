@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         profile, _ = Profile.objects.get_or_create(user=user)
 
     dependencies = [
-        ('core', '0015_auto_20170522_1030'),
+        ('core', '0017_auto_20171129_1330'),
     ]
 
     operations = [

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import reverse
@@ -18,11 +19,12 @@ User = get_user_model()
 
 class GetUserMixin(object):
     def get_user(self, request, username: str):
-        # Regular user and see anouther profile but can't edit.
-        if not request.user.is_authenticated or (
-                not request.user.is_superuser and
-                request.method == 'POST' and
-                username and username != request.user.username):
+        # Anonymous user can't see another profile and can't edit.
+        if not request.user.is_authenticated:
+            return
+        # Regular user and see another profile but can't edit.
+        if not request.user.is_superuser and request.method == 'POST' and \
+                username and username != request.user.username:
             raise PermissionDenied
 
         if username:
@@ -45,18 +47,24 @@ class ProfileView(View, GetUserMixin):
     def get(self, request, username):
         """View user profile."""
         user = GetUserMixin().get_user(request, username)
+        if not user:
+            return redirect_to_login(request.path)
+
         form = AvatarForm(data=request.POST)
 
         return render(request, 'profile.html', {
             'profile_user': user,
             'is_editing_allowed': user == request.user or
-                                  request.user.is_superuser,
+            request.user.is_superuser,
             'form': form,
         })
 
     def post(self, request, username):
         """Update user."""
         user = GetUserMixin().get_user(request, username)
+        if not user:
+            return redirect_to_login(request.path)
+
         avatar = request.FILES.get('avatar', '')
         if avatar:
             profile = get_object_or_404(Profile, user=user)
@@ -177,7 +185,7 @@ def log_in(request):
 @login_required
 def log_out(request):
     logout(request)
-    return redirect(reverse('core:login'))
+    return redirect(reverse(settings.LOGIN_URL))
 
 
 def sign_up(request):

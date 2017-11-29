@@ -14,10 +14,10 @@ def on_user_loggedin(sender, user, request, **kwargs):
 
         # Update user coordinates.
         ip = request.META.get('REMOTE_ADDR')
-        if ip and not all([profile.lon, profile.lat]):
-                g = GeoIP2()
-                profile.lon, profile.lat = g.lon_lat(ip)
-                profile.save()
+        if ip and ip != '127.0.0.1' and not all([profile.lon, profile.lat]):
+            g = GeoIP2()
+            profile.lon, profile.lat = g.lon_lat(ip)
+            profile.save()
 
 
 @receiver(user_logged_out)

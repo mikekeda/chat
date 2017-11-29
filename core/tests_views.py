@@ -21,6 +21,12 @@ class ChatViewTest(TestCase):
         test_user2 = User.objects.create_user(username='testuser2',
                                               password='12345')
         test_user2.save()
+        test_admin = User.objects.create_superuser(
+            username='testadmin',
+            email='myemail@test.com',
+            password='12345'
+        )
+        test_admin.save()
 
     # Pages available for anonymous.
     def test_views_user_list(self):
@@ -71,10 +77,10 @@ class ChatViewTest(TestCase):
 
     def test_views_update_profile(self):
         resp = self.client.post(
-            reverse('core:update_profile'),
+            reverse('core:user', kwargs={'username': 'testuser'}),
             {'first_name': 'test1'}
         )
-        self.assertRedirects(resp, '/login?next=/update-profile')
+        self.assertRedirects(resp, '/login?next=/user/testuser')
         self.client.login(username='testuser', password='12345')
         # Need to create profile for the users.
         resp = self.client.get(reverse('core:user',
@@ -83,7 +89,7 @@ class ChatViewTest(TestCase):
 
         # Change first name.
         resp = self.client.post(
-            reverse('core:update_profile'),
+            reverse('core:user', kwargs={'username': 'testuser'}),
             {'name': 'first_name', 'value': 'test name'}
         )
         self.assertEqual(resp.status_code, 200)
@@ -96,7 +102,7 @@ class ChatViewTest(TestCase):
 
         # Change last name.
         resp = self.client.post(
-            reverse('core:update_profile'),
+            reverse('core:user', kwargs={'username': 'testuser'}),
             {'name': 'last_name', 'value': 'test last name'}
         )
         self.assertEqual(resp.status_code, 200)
@@ -109,7 +115,7 @@ class ChatViewTest(TestCase):
 
         # Change email.
         resp = self.client.post(
-            reverse('core:update_profile'),
+            reverse('core:user', kwargs={'username': 'testuser'}),
             {'name': 'email', 'value': 'myemail2@test.com'}
         )
         self.assertEqual(resp.status_code, 200)
@@ -122,7 +128,7 @@ class ChatViewTest(TestCase):
 
         # Change not existing field (fail).
         resp = self.client.post(
-            reverse('core:update_profile'),
+            reverse('core:user', kwargs={'username': 'testuser'}),
             {'name': 'dummy_field', 'value': 'dummy_value'}
         )
         self.assertEqual(resp.status_code, 403)
@@ -130,6 +136,20 @@ class ChatViewTest(TestCase):
             str(resp.content, encoding='utf8'),
             '"You can\'t change this field"'
         )
+
+        # Admin can update profile for any user.
+        self.client.login(username='testadmin', password='12345')
+        resp = self.client.post(
+            reverse('core:user', kwargs={'username': 'testuser'}),
+            {'name': 'first_name', 'value': 'test name'}
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertJSONEqual(
+            str(resp.content, encoding='utf8'),
+            {'success': True}
+        )
+        user = User.objects.get(username='testuser')
+        self.assertEqual(user.first_name, 'test name')
 
     def test_views_chat(self):
         resp = self.client.get(reverse('core:chat',
