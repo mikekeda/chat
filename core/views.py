@@ -1,18 +1,34 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseRedirect, Http404
-from django.core.exceptions import ValidationError
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext
-from django.conf import settings
+from django.views import View
 
 from .models import Profile, Thread, UnreadThread, Message
 from .forms import AvatarForm
 
 User = get_user_model()
+
+
+class GetUserMixin(object):
+    def get_user(self, request, username: str):
+        # Regular user and see anouther profile but can't edit.
+        if not request.user.is_authenticated or (
+                not request.user.is_superuser and
+                request.method == 'POST' and
+                username and username != request.user.username):
+            raise PermissionDenied
+
+        if username:
+            return get_object_or_404(User, username=username)
+
+        return request.user
 
 
 @login_required
@@ -24,17 +40,52 @@ def user_list(request):
     return render(request, 'user_list.html', {'users': users})
 
 
-@login_required
-def profile_view(request, username):
+class ProfileView(View, GetUserMixin):
     """User profile."""
-    user = get_object_or_404(User, username=username)
-    form = AvatarForm(data=request.POST)
+    def get(self, request, username):
+        """View user profile."""
+        user = GetUserMixin().get_user(request, username)
+        form = AvatarForm(data=request.POST)
 
-    return render(request, 'profile.html', {
-        'profile_user': user,
-        'is_current_user': user == request.user,
-        'form': form,
-    })
+        return render(request, 'profile.html', {
+            'profile_user': user,
+            'is_editing_allowed': user == request.user or
+                                  request.user.is_superuser,
+            'form': form,
+        })
+
+    def post(self, request, username):
+        """Update user."""
+        user = GetUserMixin().get_user(request, username)
+        avatar = request.FILES.get('avatar', '')
+        if avatar:
+            profile = get_object_or_404(Profile, user=user)
+            form = AvatarForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            allowed_fields = ['first_name', 'last_name', 'email']
+            field = request.POST.get('name', '')
+            value = request.POST.get('value', '')
+            if field and field in allowed_fields:
+                setattr(user, field, value)
+                try:
+                    user.clean_fields()
+                    user.save()
+                    return JsonResponse({'success': True})
+                except ValidationError as e:
+                    return JsonResponse(
+                        ', '.join(e.message_dict[field]),
+                        safe=False,
+                        status=422
+                        )
+
+        return JsonResponse(
+            ugettext("You can't change this field"),
+            safe=False,
+            status=403
+        )
 
 
 @login_required
@@ -109,44 +160,10 @@ def call_view(request, username):
     })
 
 
-@login_required
-def update_profile(request):
-    """Update user."""
-    if request.method == 'POST':
-        avatar = request.FILES.get('avatar', '')
-        if avatar:
-            profile = get_object_or_404(Profile, user=request.user)
-            form = AvatarForm(request.POST, request.FILES, instance=profile)
-            if form.is_valid():
-                form.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            allowed_fields = ['first_name', 'last_name', 'email']
-            field = request.POST.get('name', '')
-            value = request.POST.get('value', '')
-            if field and field in allowed_fields:
-                setattr(request.user, field, value)
-                try:
-                    request.user.clean_fields()
-                    request.user.save()
-                    return JsonResponse({'success': True})
-                except ValidationError as e:
-                    return JsonResponse(
-                        ', '.join(e.message_dict[field]),
-                        safe=False,
-                        status=422
-                    )
-
-    return JsonResponse(
-        ugettext("You can't change this field"),
-        safe=False,
-        status=403
-    )
-
-
 def log_in(request):
     if request.user.is_authenticated():
         return redirect(settings.LOGIN_REDIRECT_URL)
+
     form = AuthenticationForm()
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)

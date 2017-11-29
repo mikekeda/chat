@@ -14,6 +14,8 @@ class Profile(models.Model):
         upload_to='avatars/',
         default='avatars/no-avatar.png'
     )
+    lon = models.FloatField(blank=True, null=True)
+    lat = models.FloatField(blank=True, null=True)
 
     def preview(self):
         return '<img src="{}{}" width="150" height="150" />'.format(

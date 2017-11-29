@@ -1,16 +1,23 @@
 from django.contrib.auth import user_logged_in, user_logged_out
-from django.dispatch import receiver
+from django.contrib.gis.geoip2 import GeoIP2
 from django.core.cache import cache
+from django.dispatch import receiver
 
 from .models import Profile
 
 
 @receiver(user_logged_in)
-def on_user_loggedin(sender, **kwargs):
-    user = kwargs.get('user')
+def on_user_loggedin(sender, user, request, **kwargs):
     if user.is_authenticated():
         # If there no user profile - create it.
-        Profile.objects.get_or_create(user=user)
+        profile, _ = Profile.objects.get_or_create(user=user)
+
+        # Update user coordinates.
+        ip = request.META.get('REMOTE_ADDR')
+        if ip and not all([profile.lon, profile.lat]):
+                g = GeoIP2()
+                profile.lon, profile.lat = g.lon_lat(ip)
+                profile.save()
 
 
 @receiver(user_logged_out)

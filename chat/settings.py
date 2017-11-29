@@ -237,3 +237,5 @@ JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',
 PROJECT_APPS = ['core', 'chat']
 
 PYLINT_LOAD_PLUGIN = ['pylint_django']
+
+GEOIP_PATH = 'geo/'
