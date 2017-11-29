@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'social_django',
     'widget_tweaks',
     'django_jenkins',
+    'chatterbot.ext.django_chatterbot',
 
     'core',
 ]
@@ -239,3 +240,19 @@ PROJECT_APPS = ['core', 'chat']
 PYLINT_LOAD_PLUGIN = ['pylint_django']
 
 GEOIP_PATH = 'geo/'
+
+CHATTERBOT = {
+    'name': 'Chat Bot',
+    'logic_adapters': [
+        'chatterbot.logic.BestMatch'
+    ],
+    'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
+    'storage_adapter': 'chatterbot.storage.DjangoStorageAdapter',
+    'training_data': [
+        "chatterbot.corpus.english",
+        "chatterbot.corpus.spanish",
+        "chatterbot.corpus.italian",
+        "chatterbot.corpus.french",
+        "chatterbot.corpus.russian"
+    ]
+}

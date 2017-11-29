@@ -16,22 +16,7 @@ app = Celery('chat')
 
 User = get_user_model()
 
-chatbot = ChatBot(
-    "Chat Bot",
-    logic_adapters=[
-        "chatterbot.logic.BestMatch"
-    ],
-    trainer='chatterbot.trainers.ChatterBotCorpusTrainer'
-)
-
-# Train chatbot.
-chatbot.train(
-    "chatterbot.corpus.english",
-    "chatterbot.corpus.spanish",
-    "chatterbot.corpus.italian",
-    "chatterbot.corpus.french",
-    "chatterbot.corpus.russian"
-)
+chatbot = ChatBot(**settings.CHATTERBOT)
 
 
 @app.task
