@@ -52,11 +52,14 @@ class ProfileView(View, GetUserMixin):
 
         form = AvatarForm(data=request.POST)
         is_editing_allowed = user == request.user or request.user.is_superuser
+        threads = Thread.objects.filter(users=request.user)\
+            .order_by('-last_message').values_list('id', 'name')
 
         return render(request, 'profile.html', {
             'profile_user': user,
             'is_editing_allowed': is_editing_allowed,
             'form': form,
+            'threads': threads,
         })
 
     def post(self, request, username):
