@@ -45,6 +45,11 @@ SECRET_KEY = get_env_var(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(get_env_var('DEBUG', True))
 
+INTERNAL_IPS = (
+    '0.0.0.0',
+    '127.0.0.1',
+)
+
 ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', '*').split(',')
 
 
@@ -67,6 +72,9 @@ INSTALLED_APPS = [
     'core',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,6 +88,9 @@ MIDDLEWARE = [
 
     'core.middleware.active_user_middleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',

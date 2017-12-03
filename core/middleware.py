@@ -7,7 +7,7 @@ from django.conf import settings
 def active_user_middleware(get_response):
 
     def middleware(request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             now = datetime.datetime.now()
             cache.set('seen_{}'.format(request.user.username), now,
                       settings.USER_ONLINE_TIMEOUT)

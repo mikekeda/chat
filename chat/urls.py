@@ -1,21 +1,18 @@
 """
 chat URL Configuration
 """
-from django.conf.urls import include, url
-from django.contrib import admin
 from django.conf import settings
+from django.conf.urls import include
+from django.contrib import admin
+from django.urls import path
 
 
 urlpatterns = [
-    url(r'^', include('core.urls', namespace='core')),
-
-    url(r'^oauth/', include('social_django.urls', namespace='social')),
-
-    url(r'^admin/', admin.site.urls),
+    path('', include('core.urls', namespace='core')),
+    path('oauth/', include('social_django.urls', namespace='social')),
+    path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

@@ -3,13 +3,16 @@ import datetime
 from django.conf import settings
 from django.db import models
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from channels.binding.websockets import WebsocketBinding
 
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, related_name='profile')
+        settings.AUTH_USER_MODEL,
+        related_name='profile',
+        on_delete=models.CASCADE
+    )
     avatar = models.ImageField(
         upload_to='avatars/',
         default='avatars/no-avatar.png'
@@ -64,10 +67,11 @@ class Thread(models.Model):
 
 
 class UnreadThread(models.Model):
-    thread = models.ForeignKey(Thread)
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='unread_thread'
+        related_name='unread_thread',
+        on_delete=models.CASCADE
     )
     date = models.DateTimeField(auto_now_add=True)
 
@@ -85,8 +89,15 @@ class UnreadThread(models.Model):
 
 
 class Message(models.Model):
-    thread = models.ForeignKey(Thread, related_name='messages')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    thread = models.ForeignKey(
+        Thread,
+        related_name='messages',
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
 

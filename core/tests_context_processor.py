@@ -1,8 +1,8 @@
 from unittest import mock
 
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from .context_processors import unread_threads
 

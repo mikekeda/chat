@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.test import TestCase
+from django.urls import reverse
 
 from .models import Profile
 

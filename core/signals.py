@@ -18,7 +18,7 @@ def get_client_ip(request):
 
 @receiver(user_logged_in)
 def on_user_loggedin(sender, user, request, **kwargs):
-    if user.is_authenticated():
+    if user.is_authenticated:
         # If there no user profile - create it.
         profile, _ = Profile.objects.get_or_create(user=user)
 
@@ -33,5 +33,5 @@ def on_user_loggedin(sender, user, request, **kwargs):
 @receiver(user_logged_out)
 def on_user_logout(sender, **kwargs):
     user = kwargs.get('user')
-    if user.is_authenticated():
+    if user.is_authenticated:
         cache.delete('seen_{}'.format(user.username))

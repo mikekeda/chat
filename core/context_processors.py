@@ -6,7 +6,7 @@ def unread_threads(request):
     threads = []
     unread_threads_counter = 0
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         threads = UnreadThread.objects.filter(user=request.user)\
             .order_by('-date').values_list('thread__id', 'thread__name')[:10]
 

@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils.translation import ugettext
 from django.views import View
 
@@ -172,7 +172,7 @@ def call_view(request, username):
 
 
 def log_in(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
 
     form = AuthenticationForm()
@@ -192,7 +192,7 @@ def log_out(request):
 
 
 def sign_up(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
     form = UserCreationForm()
     if request.method == 'POST':

@@ -1,19 +1,21 @@
-from django.conf.urls import url
 from django.conf import settings
+from django.urls import path
 
 from .views import (log_in, log_out, sign_up, user_list, thread_view,
                     call_view, ProfileView)
 
 
+app_name = "Chat"
+
 urlpatterns = [
-    url(r'^login$', log_in, name='login'),
-    url(r'^logout$', log_out, name='logout'),
-    url(r'^signup$', sign_up, name='signup'),
-    url(r'^$', user_list, name='user_list'),
-    url(r'^user/(?P<username>.+)$', ProfileView.as_view(), name='user'),
-    url(r'^chat/(?P<username>.+)$', thread_view, name='chat'),
-    url(r'^thread/(?P<thread_id>.+)$', thread_view, name='thread'),
-    url(r'^call/(?P<username>.+)$', call_view, name='call'),
+    path('login', log_in, name='login'),
+    path('logout', log_out, name='logout'),
+    path('signup', sign_up, name='signup'),
+    path('', user_list, name='user_list'),
+    path('user/<str:username>', ProfileView.as_view(), name='user'),
+    path('chat/<str:username>', thread_view, name='chat'),
+    path('thread/<int:thread_id>', thread_view, name='thread'),
+    path('call/<str:username>', call_view, name='call'),
 ]
 
 if settings.DEBUG:
