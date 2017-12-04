@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.core.cache import cache
 from django.urls import reverse
+from django.utils.html import format_html
 from channels.binding.websockets import WebsocketBinding
 
 
@@ -21,13 +22,13 @@ class Profile(models.Model):
     lat = models.FloatField(blank=True, null=True)
 
     def preview(self):
-        return '<img src="{}{}" width="150" height="150" />'.format(
+        return format_html(
+            '<img src="{}{}" width="150" height="150" />',
             settings.MEDIA_URL,
             self.avatar
         )
 
     preview.short_description = 'Avatar preview'
-    preview.allow_tags = True
 
     def online(self):
         """Check if user is online (if Redis still has key 'seen_username')."""
@@ -54,13 +55,13 @@ class Thread(models.Model):
     last_message = models.DateTimeField(null=True)
 
     def link_to_thread(self):
-        return '<a href="{}">{}</a>'.format(
+        return format_html(
+            '<a href="{}">{}</a>',
             reverse('core:thread', kwargs={'thread_id': self.pk}),
             self.name
         )
 
     link_to_thread.short_description = 'Link to thread'
-    link_to_thread.allow_tags = True
 
     def __str__(self):
         return self.name
@@ -76,13 +77,13 @@ class UnreadThread(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def link_to_thread(self):
-        return '<a href="{}">{}</a>'.format(
+        return format_html(
+            '<a href="{}">{}</a>',
             reverse('core:thread', kwargs={'thread_id': self.thread.pk}),
             self.thread.name
         )
 
     link_to_thread.short_description = 'Link to thread'
-    link_to_thread.allow_tags = True
 
     def __str__(self):
         return '{}: {}'.format(self.thread.name, self.user.username)
@@ -102,13 +103,13 @@ class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def link_to_thread(self):
-        return '<a href="{}">{}</a>'.format(
+        return format_html(
+            '<a href="{}">{}</a>',
             reverse('core:thread', kwargs={'thread_id': self.thread.pk}),
             self.thread.name
         )
 
     link_to_thread.short_description = 'Link to thread'
-    link_to_thread.allow_tags = True
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
