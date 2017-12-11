@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.urls import path
 
-from .views import (log_in, log_out, sign_up, user_list, thread_view,
-                    call_view, ProfileView)
+from .views import (about_page, log_in, log_out, sign_up, user_list,
+                    thread_view, call_view, ProfileView)
 
 
 app_name = "Chat"
 
 urlpatterns = [
+    path('about', about_page, name='about_page'),
     path('login', log_in, name='login'),
     path('logout', log_out, name='logout'),
     path('signup', sign_up, name='signup'),

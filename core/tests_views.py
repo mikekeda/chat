@@ -29,13 +29,10 @@ class ChatViewTest(TestCase):
         test_admin.save()
 
     # Pages available for anonymous.
-    def test_views_user_list(self):
-        resp = self.client.get(reverse('core:user_list'))
-        self.assertRedirects(resp, '/login?next=/')
-        self.client.login(username='testuser', password='12345')
-        resp = self.client.get('/')
+    def test_views_about(self):
+        resp = self.client.get(reverse('core:about_page'))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'user_list.html')
+        self.assertTemplateUsed(resp, 'about.html')
 
     def test_views_login(self):
         resp = self.client.get(reverse('core:login'))
@@ -65,6 +62,24 @@ class ChatViewTest(TestCase):
         self.assertRedirects(resp, reverse('core:login'))
 
     # Pages available only for registered users.
+    def test_views_user_list(self):
+        resp = self.client.get(reverse('core:user_list'))
+        self.assertRedirects(resp, '/login?next=/')
+
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'user_list.html')
+
+    def test_views_chatbot(self):
+        resp = self.client.get('/chat/chatbot')
+        self.assertRedirects(resp, '/login?next=/chat/chatbot')
+
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get('/chat/chatbot')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'thread.html')
+
     def test_views_user(self):
         resp = self.client.get(reverse('core:user',
                                        kwargs={'username': 'testuser'}))

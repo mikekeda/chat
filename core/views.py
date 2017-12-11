@@ -42,6 +42,11 @@ def user_list(request):
     return render(request, 'user_list.html', {'users': users})
 
 
+def about_page(request):
+    """About page."""
+    return render(request, 'about.html')
+
+
 class ProfileView(View, GetUserMixin):
     """User profile."""
     def get(self, request, username):
