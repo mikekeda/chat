@@ -76,6 +76,7 @@
       var action = raw_data.payload.action;
       var data = raw_data.payload.data;
       var pk = raw_data.payload.pk;
+      var msg;
 
       // On message Update.
       if (action == 'update') {
@@ -86,6 +87,7 @@
       // On message Insert.
       if (action == 'create') {
         $message = $('#message-').clone().toggleClass('left', data.user != user).toggleClass('right', data.user == user).removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
+        $message.attr('lang', data.lang);
         $message.find('.text').text(data.text);
         $message.find('.date').data('date', data.date).text('{% trans "Just now" %}');
         if (users.hasOwnProperty(data.user)) {
@@ -99,6 +101,11 @@
         socket.send(JSON.stringify({
           read: true,
         }));
+
+        msg = new SpeechSynthesisUtterance(data.text);
+        msg.lang = data.lang;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(msg);
       }
 
       // On message Delete.

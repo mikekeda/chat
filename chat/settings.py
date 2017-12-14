@@ -196,6 +196,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('es', 'Spanish'),
+    ('uk', 'Ukrainian'),
+    ('it', 'Italian'),
+    ('fr', 'French'),
+    ('ru', 'Russian'),
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 

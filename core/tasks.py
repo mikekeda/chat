@@ -1,14 +1,15 @@
 import datetime
 import json
+import langid
 
 from celery import Celery, shared_task
 from chatterbot import ChatBot
 
 from channels import Group
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.conf import settings
 
 from .models import Profile, Message
 
@@ -17,6 +18,7 @@ app = Celery('chat')
 User = get_user_model()
 
 chatbot = ChatBot(**settings.CHATTERBOT)
+langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
 @app.task
@@ -34,10 +36,12 @@ def update_user_statuses():
 def chatbot_response(thread_id, text):
     chatbot_user = User.objects.get(username='chatbot')
 
-    response = chatbot.get_response(text)
+    response = str(chatbot.get_response(text))
 
-    Message(
+    message = Message(
         thread_id=thread_id,
         user=chatbot_user,
         text=response
-    ).save()
+    )
+    message.lang, _ = langid.classify(message.text)
+    message.save()

@@ -1,8 +1,8 @@
 import datetime
 
 from django.conf import settings
-from django.db import models
 from django.core.cache import cache
+from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
 from channels.binding.websockets import WebsocketBinding
@@ -100,6 +100,11 @@ class Message(models.Model):
         on_delete=models.CASCADE
     )
     text = models.TextField()
+    lang = models.CharField(
+        max_length=2,
+        choices=settings.LANGUAGES,
+        default='en'
+    )
     date = models.DateTimeField(auto_now_add=True)
 
     def link_to_thread(self):

@@ -1,5 +1,5 @@
 {% url 'core:user' message.user.username as user_url %}
-<li id="message-{{ message.pk }}" class="{% if user.pk == message.user.pk %}right{% else %}left{% endif %} clearfix message {% if not message %}hidden-xs-up{% endif %}">
+<li id="message-{{ message.pk }}" lang="{{ message.lang }}" class="{% if user.pk == message.user.pk %}right{% else %}left{% endif %} clearfix message {% if not message %}hidden-xs-up{% endif %}">
     <span class="chat-img">
         <a href="{{ user_url }}">
             <img src="{{ message.avatar }}" width="50" height="50" alt="User Avatar" class="avatar" />

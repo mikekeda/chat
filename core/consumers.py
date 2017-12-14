@@ -1,10 +1,15 @@
 import json
+import langid
+
+from django.conf import settings
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from channels.generic.websockets import WebsocketDemultiplexer
 
 from .models import Profile, Thread, UnreadThread, Message, MessageBinding
 from .tasks import chatbot_response
+
+langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
 @channel_session_user_from_http
@@ -50,6 +55,7 @@ class WsThread(WebsocketDemultiplexer):
                 text=content.get('text')
             )
             if message and message.thread.users.filter(pk=message.user.pk):
+                message.lang, _ = langid.classify(message.text)
                 message.save()
 
                 # Create unread thread for each user in thread,
