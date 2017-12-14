@@ -140,7 +140,7 @@ def thread_view(request, username=None, thread_id=None):
 
     # Get last 50 messages.
     messages = Message.objects.select_related('user').filter(thread=thread)\
-                      .order_by('date')[:50]
+                      .order_by('date')[50:]
     for message in messages:
         if message.user.pk not in users:
             try:
