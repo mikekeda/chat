@@ -259,6 +259,8 @@ PROJECT_APPS = ['core', 'chat']
 
 PYLINT_LOAD_PLUGIN = ['pylint_django']
 
+GOOGLE_MAP_API_KEY = get_env_var('GOOGLE_MAP_API_KEY')
+
 GEOIP_PATH = 'geo/'
 
 CHATTERBOT = {
