@@ -140,8 +140,8 @@ def thread_view(request, username=None, thread_id=None):
 
     # Get last 50 messages.
     messages = Message.objects.select_related('user').filter(thread=thread)\
-                      .order_by('date')[:50]
-    for message in reversed(messages):
+                      .order_by('-date')[:50]
+    for message in messages:
         if message.user.pk not in users:
             try:
                 avatar = message.user.profile.avatar.url
@@ -160,7 +160,7 @@ def thread_view(request, username=None, thread_id=None):
 
     return render(request, 'thread.html', {
         'thread': thread,
-        'messages': messages,
+        'messages': reversed(messages),
         'users': users,
         'interlocutor': interlocutor,
     })
