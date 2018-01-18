@@ -1,4 +1,7 @@
+import json
+
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
@@ -40,6 +43,32 @@ def user_list(request):
         .values_list('username', flat=True).order_by('username')
 
     return render(request, 'user_list.html', {'users': users})
+
+
+@staff_member_required
+def user_map(request):
+    """Maps with users."""
+    users = Profile.objects.select_related('user')\
+        .values_list('user__username', 'lat', 'lon')
+
+    users = [
+        {
+            'username': user[0],
+            'location': {
+                'lat': user[1],
+                'lng': user[2],
+            },
+            'profile': reverse('core:user', kwargs={'username': user[0]})
+        }
+        for user in users
+        if user[1] and user[2]
+    ]
+    users = json.dumps(users)
+
+    return render(request, 'users_map.html', {
+        'users': users,
+        'google_map_api_key': settings.GOOGLE_MAP_API_KEY
+    })
 
 
 def about_page(request):

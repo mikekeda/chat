@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Users" %}{% endblock title %}
+
+{% block content %}
+  <div class="container-fluid" style="margin-top: 56px; width: 100%; height: calc(100vh - 56px);">
+    <div id="map" style="height: 100%;"></div>
+    <script>
+      function initMap() {
+        var marker;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 2,
+          center: {lat: 28.024, lng: 40.887}
+        });
+
+        // Add some markers to the map.
+        // Note: The code uses the JavaScript Array.prototype.map() method to
+        // create an array of markers based on a given "data" array.
+        // The map() method here has nothing to do with the Google Maps API.
+        var markers = data.map(function(user) {
+          marker = new google.maps.Marker({
+            position: user.location,
+            label: user.username
+          });
+
+          google.maps.event.addListener(marker, 'click', (function () {
+              return function () {
+                  window.location = user.profile;
+              };
+          })(marker));
+
+          return marker;
+        });
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      }
+      var data = {{ users|safe }};
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap"></script>
+  </div>
+{% endblock content %}

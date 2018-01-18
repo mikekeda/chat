@@ -207,3 +207,16 @@ class ChatViewTest(TestCase):
                                        kwargs={'username': 'testuser2'}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'call.html')
+
+    def test_users_map_page(self):
+        resp = self.client.get(reverse('core:users_map'))
+        self.assertRedirects(resp, '/admin/login/?next=/users')
+
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:users_map'))
+        self.assertRedirects(resp, '/admin/login/?next=/users')
+
+        self.client.login(username='testadmin', password='12345')
+        resp = self.client.get(reverse('core:users_map'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'users_map.html')

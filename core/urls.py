@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import path
 
-from .views import (about_page, log_in, log_out, sign_up, user_list,
+from .views import (about_page, log_in, log_out, sign_up, user_list, user_map,
                     thread_view, call_view, ProfileView)
 
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout', log_out, name='logout'),
     path('signup', sign_up, name='signup'),
     path('', user_list, name='user_list'),
+    path('users', user_map, name='users_map'),
     path('user/<str:username>', ProfileView.as_view(), name='user'),
     path('chat/<str:username>', thread_view, name='chat'),
     path('thread/<int:thread_id>', thread_view, name='thread'),
