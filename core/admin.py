@@ -1,9 +1,31 @@
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
 
 from .models import Profile, Thread, UnreadThread, Message
 
+User = get_user_model()
 
-class ProfileAdmin(admin.ModelAdmin):
+
+class BaseModelAdmin(admin.ModelAdmin):
+    def get_changelist_instance(self, request):
+        changelist = super().get_changelist_instance(request)
+
+        # Get all related user usernames and send to the cache,
+        # we will use it later in __str__ method to improve performance.
+        uids = {message.user_id for message in changelist.result_list}
+        elements = User.objects.filter(pk__in=uids)\
+            .values_list('pk', 'username')
+        cache.set_many({
+            'username_by_id_{}'.format(element[0]): element[1]
+            for element in elements
+        }, settings.USER_ONLINE_TIMEOUT)
+
+        return changelist
+
+
+class ProfileAdmin(BaseModelAdmin):
     readonly_fields = ('preview', 'location')
     search_fields = ['user__username']
 
@@ -13,12 +35,12 @@ class ThreadAdmin(admin.ModelAdmin):
     search_fields = ['users__username']
 
 
-class UnreadThreadAdmin(admin.ModelAdmin):
+class UnreadThreadAdmin(BaseModelAdmin):
     readonly_fields = ('date', 'link_to_thread',)
     search_fields = ['user__username']
 
 
-class MessageAdmin(admin.ModelAdmin):
+class MessageAdmin(BaseModelAdmin):
     readonly_fields = ('date', 'link_to_thread',)
     search_fields = ['user__username', 'text']
 
