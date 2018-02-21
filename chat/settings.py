@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_jenkins',
     'chatterbot.ext.django_chatterbot',
+    'silk',
 
     'core',
 ]
@@ -85,6 +86,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'silk.middleware.SilkyMiddleware',
 
     'core.middleware.active_user_middleware',
 ]
@@ -278,3 +280,9 @@ CHATTERBOT = {
         "chatterbot.corpus.russian"
     ]
 }
+
+SILKY_AUTHENTICATION = True  # User must login
+SILKY_AUTHORISATION = True  # User must have permissions
+# SILKY_PYTHON_PROFILER = True
+# SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_INTERCEPT_PERCENT = 100
