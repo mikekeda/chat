@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-  </div>
+</div>
 {% endblock content %}
 
 {% block script %}
@@ -108,7 +108,24 @@
 
         if (read_messages.checked) {
           msg = new SpeechSynthesisUtterance(data.text);
-          msg.lang = data.lang;
+
+          // Try to use preferenced voice.
+          msg.voice = window.speechSynthesis.getVoices().filter(function(voice) {
+            if (data.lang === 'en') {
+              return voice.name == 'Google UK English Male';
+            }
+            if (data.lang === 'es') {
+              return voice.name == 'Google español';
+            }
+            if (data.lang === 'fr') {
+              return voice.name == 'Google français';
+            }
+          })[0];
+
+          // Set at last lang.
+          if (msg.voice == null) {
+            msg.lang = data.lang;
+          }
           window.speechSynthesis.cancel();
           window.speechSynthesis.speak(msg);
         }

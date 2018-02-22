@@ -6,11 +6,6 @@
   <div class="jumbotron mt-5">
   <form action="{% url 'core:login' %}" method="post" class="">
     {% csrf_token %}
-    {% if form.non_field_errors %}
-    <div class="alert alert-warning col-sm-9 offset-sm-3" role="alert">
-      {{ form.non_field_errors }}
-    </div>
-    {% endif %}
     {% for field in form %}
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">{{ field.label }}</label>
@@ -24,6 +19,11 @@
         </div>
       </div>
     {% endfor %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-warning col-sm-9 offset-sm-3" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
     <button type="submit" class="btn btn-primary float-right">{% trans "Log in" %}</button>
   </form>
 

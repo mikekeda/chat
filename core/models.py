@@ -116,7 +116,7 @@ class UnreadThread(models.Model):
     link_to_thread.short_description = 'Link to thread'
 
     def __str__(self):
-        return '{}: {}'.format(self.thread.name, get_username_by_uid(self))
+        return '{}: {}'.format(self.thread_id, get_username_by_uid(self))
 
 
 class Message(models.Model):
