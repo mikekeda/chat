@@ -55,3 +55,23 @@ class ChatAdminTest(TestCase):
         resp = self.client.get('/admin/core/unreadthread/add/')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'admin/change_form.html')
+
+    def test_admin_friendshiprequest(self):
+        self.client.login(username='testadmin', password='12345')
+        resp = self.client.get('/admin/core/friendshiprequest/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'admin/base.html')
+
+        resp = self.client.get('/admin/core/friendshiprequest/add/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'admin/change_form.html')
+
+    def test_admin_friend(self):
+        self.client.login(username='testadmin', password='12345')
+        resp = self.client.get('/admin/core/friend/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'admin/base.html')
+
+        resp = self.client.get('/admin/core/friend/add/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'admin/change_form.html')

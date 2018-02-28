@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 
-from .models import Profile, Thread, UnreadThread, Message
+from .models import (Profile, Thread, UnreadThread, Message, FriendshipRequest,
+                     Friend)
 
 User = get_user_model()
 
@@ -51,3 +52,5 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(UnreadThread, UnreadThreadAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(FriendshipRequest)
+admin.site.register(Friend)
