@@ -8,13 +8,14 @@ from .models import Profile
 
 class ChatModelTest(TestCase):
     def setUp(self):
-        # Create usual user.
-        test_user = User.objects.create_user(username='test_model_user1',
-                                             password='12345')
-        test_user.save()
-        test_user = User.objects.create_user(username='test_model_user2',
-                                             password='12345')
-        test_user.save()
+        """ Setup some initial users. """
+        self.user_bob = User.objects.create_user(username='test_model_user1',
+                                                 password='12345')
+        self.user_bob.save()
+
+        self.user_steve = User.objects.create_user(username='test_model_user2',
+                                                   password='12345')
+        self.user_steve.save()
 
     def test_models_profile(self):
         # Note: We don't have separate Redis for tests.
@@ -27,8 +28,7 @@ class ChatModelTest(TestCase):
         self.client.get(reverse('core:user_list'))
 
         # Check if test_model_user1 are online.
-        test_user = User.objects.get(username='test_model_user1')
-        profile, _ = Profile.objects.get_or_create(user=test_user)
+        profile, _ = Profile.objects.get_or_create(user=self.user_bob)
         self.assertTrue(bool(profile.online()))
         self.assertEqual(str(profile), 'test_model_user1')
 
@@ -41,8 +41,7 @@ class ChatModelTest(TestCase):
         self.client.get(reverse('core:user_list'))
 
         # Check if user are online.
-        test_user = User.objects.get(username='test_model_user2')
-        profile, _ = Profile.objects.get_or_create(user=test_user)
+        profile, _ = Profile.objects.get_or_create(user=self.user_steve)
         self.assertTrue(bool(profile.online()))
         self.assertEqual(str(profile), 'test_model_user2')
 
