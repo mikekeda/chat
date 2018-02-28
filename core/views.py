@@ -110,7 +110,7 @@ class ProfileView(View, GetUserMixin):
                 form.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
-            allowed_fields = ['first_name', 'last_name', 'email']
+            allowed_fields = ('first_name', 'last_name', 'email')
             field = request.POST.get('name', '')
             value = request.POST.get('value', '')
             if field and field in allowed_fields:
@@ -124,7 +124,7 @@ class ProfileView(View, GetUserMixin):
                         ', '.join(e.message_dict[field]),
                         safe=False,
                         status=422
-                        )
+                    )
 
         return JsonResponse(
             ugettext("You can't change this field"),
@@ -133,66 +133,101 @@ class ProfileView(View, GetUserMixin):
         )
 
 
-@login_required
-def thread_view(request, username=None, thread_id=None):
-    """ Thread page. """
-    interlocutor = None
-    if username:
-        interlocutor = get_object_or_404(User, username=username)
-        thread = Thread.objects\
-            .annotate(count=Count('users'))\
-            .filter(users=request.user)\
-            .filter(users=interlocutor)\
-            .filter(count=2)\
-            .first()
-        if not thread:
-            thread = Thread(name=', '.join([request.user.username, username]))
-            thread.save()
-            thread.users.add(request.user, interlocutor)
-    elif thread_id:
-        thread = get_object_or_404(Thread, pk=thread_id)
-    else:
-        # username or thread_id should be passed.
-        raise Http404
+class ThreadView(View, GetUserMixin):
+    """ Thread. """
+    def get(self, request, username=None, thread_id=None):
+        """ Thread page. """
+        if not GetUserMixin().get_user(request, username):
+            return redirect_to_login(request.path)
 
-    # The user visited this tread - delete user's unread thread.
-    UnreadThread.objects.filter(thread=thread, user=request.user).delete()
+        interlocutor = None
+        if username:
+            interlocutor = get_object_or_404(User, username=username)
+            thread = Thread.objects\
+                .annotate(count=Count('users'))\
+                .filter(users=request.user)\
+                .filter(users=interlocutor)\
+                .filter(count=2)\
+                .first()
+            if not thread:
+                thread = Thread(name=', '.join(
+                    [request.user.username, username]
+                ))
+                thread.save()
+                thread.users.add(request.user, interlocutor)
+        elif thread_id:
+            thread = get_object_or_404(Thread, pk=thread_id)
+        else:
+            # username or thread_id should be passed.
+            raise Http404
 
-    # Prepare usernames and user avatars.
-    users = {}
-    for user in thread.users.all():
-        profile, _ = Profile.objects.get_or_create(user=user)
-        users[user.pk] = {
-            'username': user.username,
-            'avatar': profile.avatar.url,
-        }
+        # The user visited this tread - delete user's unread thread.
+        UnreadThread.objects.filter(thread=thread, user=request.user).delete()
 
-    # Get last 50 messages.
-    messages = Message.objects.select_related('user').filter(thread=thread)\
-                      .order_by('-date')[:50]
-    for message in messages:
-        if message.user.pk not in users:
-            try:
-                avatar = message.user.profile.avatar.url
-            except Profile.DoesNotExist:
-                # If there no user profile - create it.
-                profile, _ = Profile.objects.get_or_create(user=message.user)
-                avatar = profile.avatar.url
-
-            users[message.user.pk] = {
-                'username': message.user.username,
-                'avatar': avatar,
+        # Prepare usernames and user avatars.
+        users = {}
+        for user in thread.users.all():
+            profile, _ = Profile.objects.get_or_create(user=user)
+            users[user.pk] = {
+                'username': user.username,
+                'avatar': profile.avatar.url,
             }
-    # Now we have all needed info - update messages.
-    for message in messages:
-        message.avatar = users[message.user.pk]['avatar']
 
-    return render(request, 'thread.html', {
-        'thread': thread,
-        'messages': reversed(messages),
-        'users': users,
-        'interlocutor': interlocutor,
-    })
+        # Get last 50 messages.
+        messages = Message.objects.select_related('user') \
+                          .filter(thread=thread).order_by('-date')[:50]
+        for message in messages:
+            if message.user.pk not in users:
+                try:
+                    avatar = message.user.profile.avatar.url
+                except Profile.DoesNotExist:
+                    # If there no user profile - create it.
+                    profile, _ = Profile.objects.get_or_create(
+                        user=message.user
+                    )
+                    avatar = profile.avatar.url
+
+                users[message.user.pk] = {
+                    'username': message.user.username,
+                    'avatar': avatar,
+                }
+        # Now we have all needed info - update messages.
+        for message in messages:
+            message.avatar = users[message.user.pk]['avatar']
+
+        return render(request, 'thread.html', {
+            'thread': thread,
+            'messages': reversed(messages),
+            'users': users,
+            'interlocutor': interlocutor,
+        })
+
+    def post(self, request, thread_id):
+        """" Thread editing. """
+        allowed_fields = ('name',)
+        field = request.POST.get('name', '')
+        value = request.POST.get('value', '')
+        if field and field in allowed_fields:
+            thread = get_object_or_404(Thread, pk=thread_id)
+            if request.user in thread.users.all():
+                # User has permission to edit thread.
+                setattr(thread, field, value)
+                try:
+                    thread.clean_fields()
+                    thread.save()
+                    return JsonResponse({'success': True})
+                except ValidationError as e:
+                    return JsonResponse(
+                        ', '.join(e.message_dict[field]),
+                        safe=False,
+                        status=422
+                    )
+
+        return JsonResponse(
+            ugettext("You can't change this field"),
+            safe=False,
+            status=403
+        )
 
 
 @login_required

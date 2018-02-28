@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Tread" %} {{ thread.name }}{% endblock title %}
+{% block title %}{{ thread.name }}{% endblock title %}
 
 {% block content %}
   <div class="jumbotron thread-jumbotron bg-white">
@@ -12,7 +12,8 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading clearfix">
                         <h4 class="clearfix">
-                            {{ thread.name }}{% if interlocutor %}
+                            <a href="#" id="name" class="editable" data-type="text" data-pk="name" data-url="{% url 'core:thread' thread.pk %}" data-placeholder="{% trans 'Enter thread title' %}" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}">{{ thread.name }}</a>
+                            {% if interlocutor %}
                                 <a href="{% url 'core:call' interlocutor.username %}" class="h2 float-right">☎</a>
                             {% endif %}
                         </h4>
@@ -62,6 +63,10 @@
       }));
       $input.val('');
     }
+
+    // Set up and initialize editable.
+    $.fn.editable.defaults.mode = 'inline';
+    $('.editable').editable();
 
     $chat.scrollTop($chat.prop('scrollHeight'));
 

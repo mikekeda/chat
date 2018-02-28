@@ -87,15 +87,16 @@
 }
 
 .editable-clear-x {
+    cursor: pointer;
     display: block;
     width: 13px;
     height: 13px;
     position: absolute;
     opacity: 0.6;
-    z-index: 100;
-    top: calc(50% - .5em);
-    right: 6px;
+    top: calc(50% - .8rem);
+    right: .8rem;
     margin-top: -6px;
+    z-index: 100;
 }
 
 .editable-clear-x:hover {
@@ -104,7 +105,7 @@
 
 .editable-clear-x:before {
     content: "⊗";
-    font-size: 1.2em;
+    font-size: 1.6rem;
 }
 
 .editable-buttons {

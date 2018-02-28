@@ -4,7 +4,7 @@ from django.urls import path
 from django.utils.translation import ugettext_lazy as _
 
 from .views import (about_page, log_in, log_out, sign_up, user_list, user_map,
-                    thread_view, call_view, ProfileView)
+                    ThreadView, call_view, ProfileView)
 
 
 app_name = "Chat"
@@ -17,8 +17,8 @@ urlpatterns = [
     path('', user_list, name='user_list'),
     path('users', user_map, name='users_map'),
     path('user/<str:username>', ProfileView.as_view(), name='user'),
-    path('chat/<str:username>', thread_view, name='chat'),
-    path('thread/<int:thread_id>', thread_view, name='thread'),
+    path('chat/<str:username>', ThreadView.as_view(), name='chat'),
+    path('thread/<int:thread_id>', ThreadView.as_view(), name='thread'),
     path('call/<str:username>', call_view, name='call'),
 ]
 admin.site.site_header = _('Chat administration')
