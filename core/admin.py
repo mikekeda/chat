@@ -27,22 +27,24 @@ class BaseModelAdmin(admin.ModelAdmin):
 
 class ProfileAdmin(BaseModelAdmin):
     readonly_fields = ('preview', 'location')
-    search_fields = ['user__username']
+    search_fields = ('user__username',)
 
 
 class ThreadAdmin(admin.ModelAdmin):
+    list_filter = ('users__username',)
     readonly_fields = ('last_message', 'link_to_thread',)
-    search_fields = ['users__username']
+    search_fields = ('users__username',)
 
 
 class UnreadThreadAdmin(BaseModelAdmin):
     readonly_fields = ('date', 'link_to_thread',)
-    search_fields = ['user__username']
+    search_fields = ('user__username',)
 
 
 class MessageAdmin(BaseModelAdmin):
+    list_filter = ('user__username', 'thread__name',)
     readonly_fields = ('date', 'link_to_thread',)
-    search_fields = ['user__username', 'text']
+    search_fields = ('user__username', 'text',)
 
 
 admin.site.register(Profile, ProfileAdmin)

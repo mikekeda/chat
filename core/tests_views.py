@@ -84,11 +84,16 @@ class ChatViewTest(TestCase):
         resp = self.client.get(reverse('core:user',
                                        kwargs={'username': 'testuser'}))
         self.assertRedirects(resp, '/login?next=/user/testuser')
+
         self.client.login(username='testuser', password='12345')
         resp = self.client.get(reverse('core:user',
                                        kwargs={'username': 'testuser'}))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'profile.html')
+
+        self.client.login(username='testuser2', password='12345')
+        resp = self.client.get(reverse('core:user',
+                                       kwargs={'username': 'testuser'}))
+        self.assertEqual(resp.status_code, 200)
 
     def test_views_update_profile(self):
         resp = self.client.post(
@@ -163,6 +168,16 @@ class ChatViewTest(TestCase):
             str(resp.content, encoding='utf8'),
             {'success': True}
         )
+        user = User.objects.get(username='testuser')
+        self.assertEqual(user.first_name, 'test name')
+
+        # User can update only his own profile.
+        self.client.login(username='testuser2', password='12345')
+        resp = self.client.post(
+            reverse('core:user', kwargs={'username': 'testuser'}),
+            {'name': 'first_name', 'value': 'test name fail'}
+        )
+        self.assertEqual(resp.status_code, 403)
         user = User.objects.get(username='testuser')
         self.assertEqual(user.first_name, 'test name')
 

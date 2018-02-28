@@ -43,3 +43,17 @@ Upgrade python packages
     pip install --upgrade --force-reinstall -r requirements.txt
     # Update requirements.txt
     pip freeze > requirements.txt
+
+
+
+
+Useful manage.py commands
+-------
+    # Run tests
+    python manage.py test
+    # Run tests and check code style and coverage
+    python manage.py jenkins --enable-coverage --pep8-exclude migrations --pylint-rcfile .pylintrc
+    # Train Chatterbot
+    python manage.py train
+    # Clearing Silk logged data
+    python manage.py silk_clear_request_log

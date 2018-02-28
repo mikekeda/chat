@@ -16,7 +16,6 @@ class ChatModelTest(TestCase):
                                              password='12345')
         test_user.save()
 
-    # Pages available for anonymous.
     def test_models_profile(self):
         # Note: We don't have separate Redis for tests.
         result = Profile.get_online_users()

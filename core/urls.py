@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.contrib import admin
 from django.urls import path
+from django.utils.translation import ugettext_lazy as _
 
 from .views import (about_page, log_in, log_out, sign_up, user_list, user_map,
                     thread_view, call_view, ProfileView)
@@ -19,6 +21,7 @@ urlpatterns = [
     path('thread/<int:thread_id>', thread_view, name='thread'),
     path('call/<str:username>', call_view, name='call'),
 ]
+admin.site.site_header = _('Chat administration')
 
 if settings.DEBUG:
     from django.conf.urls.static import static
