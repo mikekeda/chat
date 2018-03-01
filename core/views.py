@@ -79,7 +79,7 @@ def about_page(request):
 class ProfileView(View, GetUserMixin):
     """ User profile. """
     def get(self, request, username):
-        """View user profile."""
+        """ View user profile. """
         user = GetUserMixin().get_user(request, username)
         if not user:
             return redirect_to_login(request.path)

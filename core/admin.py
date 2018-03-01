@@ -15,7 +15,7 @@ class BaseModelAdmin(admin.ModelAdmin):
 
         # Get all related user usernames and send to the cache,
         # we will use it later in __str__ method to improve performance.
-        uids = {message.user_id for message in changelist.result_list}
+        uids = {instance.user_id for instance in changelist.result_list}
         elements = User.objects.filter(pk__in=uids)\
             .values_list('pk', 'username')
         cache.set_many({

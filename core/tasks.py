@@ -23,6 +23,7 @@ langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 @app.task
 def update_user_statuses():
+    """ Task to update user online statuses via websockets. """
     # Chat bot is always online.
     now = datetime.datetime.now()
     cache.set('seen_chatbot', now, settings.USER_ONLINE_TIMEOUT)
@@ -34,6 +35,7 @@ def update_user_statuses():
 
 @shared_task
 def chatbot_response(thread_id, text):
+    """ Task to send a response from Chatbot. """
     chatbot_user = User.objects.get(username='chatbot')
 
     response = str(chatbot.get_response(text))
