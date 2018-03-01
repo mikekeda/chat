@@ -2,6 +2,10 @@
     background: #fff;
 }
 
+.users-list .list-group-item {
+    background-clip: padding-box;
+}
+
 .users-list .list-group-item:nth-of-type(odd) {
     background-color: rgba(0,0,0,.05);
 }
