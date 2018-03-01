@@ -40,7 +40,7 @@ class GetUserMixin(object):
 def user_list(request):
     """ User list. """
     users = User.objects.exclude(id=request.user.id)\
-        .values_list('username', flat=True).order_by('username')
+        .values_list('username', 'last_login', named=True).order_by('username')
 
     return render(request, 'user_list.html', {'users': users})
 

@@ -9,13 +9,16 @@
 
         <ul class="list-group users-list">
             {% for user in users %}
-                <li data-username="{{ user }}" class="list-group-item justify-content-between">
-                    <a href="{% url 'core:chat' user %}" class="name text-muted">{{ user }}</a>
-                    <span class="status badge badge-default badge-pill">
-                        <a href="{% url 'core:user' user %}" class="text-white">
-                            {% trans "Offline" %}
-                        </a>
-                    </span>
+                <li data-username="{{ user.username }}" class="list-group-item justify-content-between">
+                    <a href="{% url 'core:chat' user.username %}" class="name text-muted">{{ user.username }}</a>
+                    <div>
+                        <small class="text-muted">{{ user.last_login|date:"d/m/Y" }}</small>
+                        <span class="status badge badge-default badge-pill">
+                            <a href="{% url 'core:user' user %}" class="text-white">
+                                {% trans "Offline" %}
+                            </a>
+                        </span>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
