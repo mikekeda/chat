@@ -58,7 +58,7 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
             {% for thread in threads %}
-            <a class="dropdown-item" href="{% url 'core:thread' thread.0 %}">{{ thread.1 }}</a>
+            <a class="dropdown-item" href="{% url 'core:thread' thread.id %}">{{ thread.name }}</a>
             {% endfor %}
           </div>
         </li>

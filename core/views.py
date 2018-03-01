@@ -88,7 +88,9 @@ class ProfileView(View, GetUserMixin):
         is_editing_allowed = user == request.user or request.user.is_superuser
         threads = Thread.objects.filter(
             users=user, last_message__isnull=False
-        ).order_by('-last_message').values_list('id', 'name')
+        ).order_by('-last_message').values_list(
+            'id', 'name', 'last_message', named=True
+        )
 
         return render(request, 'profile.html', {
             'profile_user': user,

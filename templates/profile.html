@@ -62,15 +62,23 @@
                     </div>
                     {% if is_editing_allowed %}
                     <div class="tab-pane" id="chats">
-                        <h4 class="my-2">{% trans "Last chats" %}</h4>
                         <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Chat" %}</th>
+                                    <th class="text-right">{% trans "Last message" %}</th>
+                                </tr>
+                            </thead>
                             <tbody>
-                                 {% for thread in threads %}
-                                 <tr>
+                                {% for thread in threads %}
+                                <tr>
                                     <td>
-                                        <a href="{% url 'core:thread' thread.0 %}" class="name text-muted">{{ thread.1 }}</a>
+                                        <a href="{% url 'core:thread' thread.id %}" class="name text-muted">{{ thread.name }}</a>
                                     </td>
-                                 </tr>
+                                    <td class="text-right">
+                                        <small>{{ thread.last_message|date:"H:i d M Y" }}</small>
+                                    </td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
