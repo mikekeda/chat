@@ -86,8 +86,9 @@ class ProfileView(View, GetUserMixin):
 
         form = AvatarForm(data=request.POST)
         is_editing_allowed = user == request.user or request.user.is_superuser
-        threads = Thread.objects.filter(users=user)\
-            .order_by('-last_message').values_list('id', 'name')
+        threads = Thread.objects.filter(
+            users=user, last_message__isnull=False
+        ).order_by('-last_message').values_list('id', 'name')
 
         return render(request, 'profile.html', {
             'profile_user': user,

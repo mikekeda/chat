@@ -14,7 +14,7 @@
                     <div>
                         <small class="text-muted">{{ user.last_login|date:"d/m/Y" }}</small>
                         <span class="status badge badge-default badge-pill">
-                            <a href="{% url 'core:user' user %}" class="text-white">
+                            <a href="{% url 'core:user' user.username %}" class="text-white">
                                 {% trans "Offline" %}
                             </a>
                         </span>
