@@ -4,21 +4,23 @@
 {% block title %}{% trans "Users" %}{% endblock title %}
 
 {% block content %}
-  <div class="jumbotron bg-white mt-5">
+<div class="container">
+    <div class="jumbotron bg-white mt-5">
 
-  <ul class="list-group users-list">
-    {% for user in users %}
-      <li data-username="{{ user }}" class="list-group-item justify-content-between">
-        <a href="{% url 'core:chat' user %}" class="name text-muted">{{ user }}</a>
-        <span class="status badge badge-default badge-pill">
-          <a href="{% url 'core:user' user %}" class="text-white">
-            {% trans "Offline" %}
-          </a>
-        </span>
-      </li>
-    {% endfor %}
-  </ul>
-  </div>
+        <ul class="list-group users-list">
+            {% for user in users %}
+                <li data-username="{{ user }}" class="list-group-item justify-content-between">
+                    <a href="{% url 'core:chat' user %}" class="name text-muted">{{ user }}</a>
+                    <span class="status badge badge-default badge-pill">
+                        <a href="{% url 'core:user' user %}" class="text-white">
+                            {% trans "Offline" %}
+                        </a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock content %}
 
 {% block script %}

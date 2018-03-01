@@ -32,13 +32,19 @@
         {% if user.is_authenticated %}
         {% with '/chat/chatbot' as chatbot_url %}
         <li class="nav-item {% if request.get_full_path == chatbot_url %}active{% endif %}">
-          <a class="nav-link" href="{{ chatbot_url }}">{% trans "Chatbot" %}</span></a>
+          <a class="nav-link" href="{{ chatbot_url }}">{% trans "Chatbot" %}</a>
         </li>
         {% endwith %}
         {% endif %}
+        {% if user.is_staff %}
+        {% url 'core:users_map' as users_url %}
+        <li class="nav-item {% if request.get_full_path == users_url %}active{% endif %}">
+          <a class="nav-link" href="{{ users_url }}">{% trans "Users" %}</a>
+        </li>
+        {% endif %}
         {% url 'core:about_page' as about_url %}
         <li class="nav-item {% if request.get_full_path == about_url %}active{% endif %}">
-          <a class="nav-link" href="{{ about_url }}">{% trans "About" %}</span></a>
+          <a class="nav-link" href="{{ about_url }}">{% trans "About" %}</a>
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
@@ -80,9 +86,8 @@
     </div>
   </nav>
 
-  <div class="container">
-    {% block content %}{% endblock content %}
-  </div>
+  {% block content %}{% endblock content %}
+
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/tether/dist/js/tether.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>

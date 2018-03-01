@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<div class="container">
   <div class="jumbotron mt-5">
   <form action="{% url 'core:signup' %}" method="post">
     {% csrf_token %}
@@ -28,4 +29,5 @@
     <p>{% trans "Already have an account?" %} <a href="{% url 'core:login' %}">{% trans "Log in!" %}</a></p>
   </form>
   </div>
+</div>
 {% endblock content %}

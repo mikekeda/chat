@@ -4,7 +4,7 @@
 {% block title %}{% trans "Users" %}{% endblock title %}
 
 {% block content %}
-  <div class="container-fluid" style="margin-top: 56px; width: 100%; height: calc(100vh - 56px);">
+<div class="container-fluid" style="margin-top: 56px; width: 100%; height: calc(100vh - 56px);">
     <div id="map" style="height: 100%;"></div>
     <script>
       function initMap() {
@@ -37,5 +37,5 @@
     </script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap"></script>
-  </div>
+</div>
 {% endblock content %}

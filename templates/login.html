@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<div class="container">
   <div class="jumbotron mt-5">
   <form action="{% url 'core:login' %}" method="post" class="">
     {% csrf_token %}
@@ -31,4 +32,5 @@
   <a href="{% url 'social:begin' 'facebook' %}">{% trans "Login with Facebook" %}</a>
   <p>{% trans "Don't have an account?" %} <a href="{% url 'core:signup' %}">{% trans "Sign up!" %}</a></p>
   </div>
+</div>
 {% endblock content %}
