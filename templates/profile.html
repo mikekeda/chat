@@ -93,7 +93,7 @@
                     <form action="{% url 'core:user' profile_user.username %}" method="post" enctype="multipart/form-data" id="avatar-upload">
                         {% csrf_token %}
                             {% for field in form %}
-                                <label class="custom-file text-left">
+                                <label class="custom-file text-left" for="{{ field.auto_id }}">
                                     {{ field|add_class:"custom-file-input" }}
                                     <span class="custom-file-control"></span>
                                 </label>

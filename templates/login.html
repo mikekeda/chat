@@ -2,6 +2,9 @@
 {% load i18n %}
 {% load widget_tweaks %}
 
+{% block title %}{% trans "Login" %}{% endblock title %}
+{% block description %}{% trans 'Login to chat with users and chatbot' %}{% endblock description %}
+
 {% block content %}
 <div class="container">
   <div class="jumbotron mt-5">
@@ -9,7 +12,7 @@
     {% csrf_token %}
     {% for field in form %}
       <div class="form-group row">
-        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+        <label class="col-sm-3 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
         <div class="col-sm-9">
         {{ field|add_class:"form-control" }}
         {% if field.errors %}
