@@ -2,6 +2,7 @@ Chat
 ======================
 
 This is site where you chat with other people.
+Link to the site - https://chat.mkeda.me
 
 Installation
 ------------
@@ -25,16 +26,10 @@ Installation
     # Create an admin user
     python manage.py createsuperuser
 
-
-
-
 Running
 -------
     # Locally
     python manage.py runserver
-
-
-
 
 Upgrade python packages
 -------
@@ -43,9 +38,6 @@ Upgrade python packages
     pip install --upgrade --force-reinstall -r requirements.txt
     # Update requirements.txt
     pip freeze > requirements.txt
-
-
-
 
 Useful manage.py commands
 -------
