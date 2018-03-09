@@ -46,6 +46,7 @@ nltk==3.2.5
 numpy==1.14.0
 oauthlib==2.0.6
 olefile==0.45.1
+opbeat==3.6.1
 packaging==16.8
 pep8==1.7.1
 Pillow==5.0.0
