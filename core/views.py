@@ -97,7 +97,7 @@ class ProfileView(View, GetUserMixin):
             'profile_user': user,
             'is_editing_allowed': is_editing_allowed,
             'form': form,
-            'threads': threads,
+            'profile_threads': threads,
         })
 
     def post(self, request, username):

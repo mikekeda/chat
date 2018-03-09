@@ -70,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for thread in threads %}
+                                {% for thread in profile_threads %}
                                 <tr>
                                     <td>
                                         <a href="{% url 'core:thread' thread.id %}" class="name text-muted">{{ thread.name }}</a>
