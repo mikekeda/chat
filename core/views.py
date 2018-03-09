@@ -48,20 +48,21 @@ def user_list(request):
 @staff_member_required
 def user_map(request):
     """ Maps with users. """
-    users = Profile.objects.select_related('user')\
-        .values_list('user__username', 'lat', 'lon')
+    users = Profile.objects.select_related('user').filter(
+        lat__isnull=False, lon__isnull=False
+    ).values_list('user__username', 'lat', 'lon', named=True)
 
     users = [
         {
-            'username': user[0],
+            'username': user.user__username,
             'location': {
-                'lat': user[1],
-                'lng': user[2],
+                'lat': user.lat,
+                'lng': user.lon,
             },
-            'profile': reverse('core:user', kwargs={'username': user[0]})
+            'profile': reverse('core:user',
+                               kwargs={'username': user.user__username})
         }
         for user in users
-        if user[1] and user[2]
     ]
     users = json.dumps(users)
 

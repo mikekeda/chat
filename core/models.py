@@ -53,16 +53,18 @@ class Profile(models.Model):
 
     def location(self):
         """ Show user location on a map. """
-        return format_html(
-            '<img src="{}"/>',
-            'https://maps.googleapis.com/maps/api/staticmap?'
-            'zoom=5&size=600x300&maptype=roadmap'
-            '&markers=color:red%7Clabel:C%7C{},{}&key={}'.format(
-                self.lat,
-                self.lon,
-                settings.GOOGLE_MAP_API_KEY
+        if self.lat is not None and self.lon is not None:
+            return format_html(
+                '<img src="{}"/>',
+                'https://maps.googleapis.com/maps/api/staticmap?'
+                'zoom=5&size=600x300&maptype=roadmap'
+                '&markers=color:red%7Clabel:C%7C{},{}&key={}'.format(
+                    self.lat,
+                    self.lon,
+                    settings.GOOGLE_MAP_API_KEY
+                )
             )
-        ) if self.lat and self.lon else 'No location available'
+        return 'No location available'
 
     def online(self):
         """ Check online status (if Redis still has key 'seen_username'). """

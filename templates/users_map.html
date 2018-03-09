@@ -11,8 +11,14 @@
       function initMap() {
         var data = {{ users|safe }};
         var marker;
+        var cluster_markers;
+        var titles;
+        var info;
+        var i;
+        var infowindow = new google.maps.InfoWindow();
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 2,
+          maxZoom: 7,
           center: {lat: 28.024, lng: 40.887}
         });
         var markers = data.map(function(user) {
@@ -33,6 +39,23 @@
         // Add a marker clusterer to manage the markers.
         var markerCluster = new MarkerClusterer(map, markers, {
           imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        });
+
+        google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
+          info = new google.maps.MVCObject;
+          info.set('position', cluster.center_);
+
+          cluster_markers = cluster.getMarkers();
+
+          titles = "";
+          for (i = 0; i < cluster_markers.length; i++) {
+            titles += "<a href='/user/" + cluster_markers[i].label + "'>" + cluster_markers[i].label + "</a>, ";
+          }
+          titles = titles.slice(0, -2);
+
+          infowindow.close();
+          infowindow.setContent(titles);
+          infowindow.open(map, info);
         });
       }
     </script>
