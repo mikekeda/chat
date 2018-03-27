@@ -175,11 +175,10 @@ SESSION_CACHE_ALIAS = "default"
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             'hosts': ['redis://localhost:6379/1'],
         },
-        'ROUTING': 'core.routing.channel_routing',
     }
 }
 
@@ -270,6 +269,7 @@ GOOGLE_MAP_API_KEY = get_env_var('GOOGLE_MAP_API_KEY')
 
 GEOIP_PATH = 'geo/'
 
+ASGI_APPLICATION = "core.routing.chat"
 CHATTERBOT = {
     'name': 'Chat Bot',
     'logic_adapters': [

@@ -1,57 +1,65 @@
 import json
 import langid
 
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import JsonWebsocketConsumer
 from django.conf import settings
-from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
-from channels.generic.websockets import WebsocketDemultiplexer
 
-from .models import Profile, Thread, UnreadThread, Message, MessageBinding
+from .models import Profile, UnreadThread, Message
 from .tasks import chatbot_response
 
 langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
-@channel_session_user_from_http
-def ws_connect(message):
-    Group('users').add(message.reply_channel)
-    # Send a list of active users to the user.
-    message.reply_channel.send({
-        'text': json.dumps(Profile.get_online_users())
-    })
+class WsUsers(JsonWebsocketConsumer):
+    """ WebsocketConsumer related to 'users' group. """
+    def connect(self):
+        """ Adds to 'users' group and send a list of active users. """
+        async_to_sync(self.channel_layer.group_add)(
+            'users',
+            self.channel_name
+        )
+        self.send_json({
+            'text': json.dumps(Profile.get_online_users())
+        })
+        super().connect()
+
+    def disconnect(self, code):
+        """ Remove from 'users' group and close the webSocket. """
+        async_to_sync(self.channel_layer.group_discard)(
+            'users',
+            self.channel_name
+        )
+        self.close()
 
 
-@channel_session_user
-def ws_disconnect(message):
-    # for thread in message.channel_session['thread']:
-    #     Group('thread-{}'.format(thread)).discard(message.reply_channel)
-    Group('users').discard(message.reply_channel)
+class WsThread(JsonWebsocketConsumer):
+    """ WebsocketConsumer related to specific 'thread' group. """
+    thread_id = None
 
+    def connect(self):
+        """ Adds to specific 'thread' group. """
+        self.thread_id = int(self.scope['url_route']['kwargs'].get('thread'))
 
-class WsThread(WebsocketDemultiplexer):
-    http_user = True
+        async_to_sync(self.channel_layer.group_add)(
+            'thread-{}'.format(str(self.thread_id)),
+            self.channel_name
+        )
+        super().connect()
 
-    consumers = {
-        'messages': MessageBinding.consumer,
-    }
+    def disconnect(self, code):
+        """ Remove from specific 'thread' group and close the webSocket. """
+        async_to_sync(self.channel_layer.group_discard)(
+            'thread-{}'.format(str(self.thread_id)),
+            self.channel_name
+        )
+        self.close()
 
-    def connection_groups(self, **kwargs):
-        """
-        Group(s) to make people join when they connect and leave when they
-        disconnect. Make sure to return a list/tuple, not a string!
-        """
-        thread = kwargs.get('thread')
-        if thread and \
-                Thread.objects.filter(pk=thread, users=self.message.user):
-            return ['thread-{}'.format(str(thread))]
-        return []
-
-    def receive(self, content, **kwargs):
+    def receive_json(self, content, **kwargs):
         if 'text' in content:
-            thread_id = int(kwargs.get('thread'))
             message = Message(
-                thread_id=thread_id,
-                user=self.message.user,
+                thread_id=self.thread_id,
+                user=self.scope.get('user'),
                 text=content.get('text')
             )
             if message and message.thread.users.filter(pk=message.user.pk):
@@ -63,15 +71,19 @@ class WsThread(WebsocketDemultiplexer):
                 for user in message.thread.users.all():
                     if user.username == 'chatbot':
                         # This is a message for chat bot.
-                        chatbot_response(thread_id, content.get('text'))
+                        chatbot_response(self.thread_id, content.get('text'))
                     else:
                         UnreadThread.objects.get_or_create(
-                            thread_id=thread_id,
+                            thread_id=self.thread_id,
                             user=user
                         )
         elif 'read' in content:
             # The message was delivered - delete user's unread thread.
             UnreadThread.objects.filter(
-                thread_id=int(kwargs.get('thread')),
-                user=self.message.user
+                thread_id=self.thread_id,
+                user=self.scope.get('user')
             ).delete()
+
+    def message_update(self, message):
+        """ Message binding. """
+        self.send_json(message['content'])

@@ -1,11 +1,10 @@
 import datetime
-import json
 import langid
 
 from celery import Celery, shared_task
 from chatterbot import ChatBot
-
-from channels import Group
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -15,6 +14,7 @@ from .models import Profile, Message
 
 app = Celery('chat')
 
+channel_layer = get_channel_layer()
 User = get_user_model()
 
 chatbot = ChatBot(**settings.CHATTERBOT)
@@ -28,9 +28,13 @@ def update_user_statuses():
     now = datetime.datetime.now()
     cache.set('seen_chatbot', now, settings.USER_ONLINE_TIMEOUT)
 
-    Group('users').send({
-        'text': json.dumps(Profile.get_online_users())
-    })
+    async_to_sync(channel_layer.group_send)(
+        'users',
+        {
+            'type': 'users.update',
+            'content': Profile.get_online_users()
+        }
+    )
 
 
 @shared_task

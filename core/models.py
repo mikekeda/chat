@@ -1,14 +1,19 @@
 import datetime
+import json
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
-from channels.binding.websockets import WebsocketBinding
 
+channel_layer = get_channel_layer()
 User = get_user_model()
 
 
@@ -148,10 +153,50 @@ class Message(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        action = 'create' if self.pk is None else 'update'
+
         self.thread.last_message = datetime.datetime.now()
         self.thread.save()
         super(Message, self).save(force_insert=False, force_update=False,
                                   using=None, update_fields=None)
+
+        # Update the message in the thread via websockets.
+        async_to_sync(channel_layer.group_send)(
+            'thread-{}'.format(str(self.thread_id)),
+            {
+                'type': 'message.update',
+                'content': {
+                    'payload': {
+                        'action': action,
+                        'data': json.loads(
+                            serializers.serialize('json', [self])[1:-1]
+                        ),
+                        'pk': self.pk
+                    }
+                }
+            }
+        )
+
+    def delete(self, using=None, keep_parents=False):
+        pk = self.pk
+        thread_id = str(self.thread_id)
+
+        super().delete(using, keep_parents)
+
+        # Delete the message from the thread via websockets.
+        async_to_sync(channel_layer.group_send)(
+            'thread-{}'.format(thread_id),
+            {
+                'type': 'message.update',
+                'content': {
+                    'payload': {
+                        'action': 'delete',
+                        'data': {'fields': None},
+                        'pk': pk
+                    }
+                }
+            }
+        )
 
     def __str__(self):
         return '{}: {}'.format(get_username_by_uid(self), self.text[:100])
@@ -237,28 +282,3 @@ class Friend(models.Model):
     def __str__(self):
         return "User #{} is friends with #{}".format(self.to_user_id,
                                                      self.from_user_id)
-
-
-class MessageBinding(WebsocketBinding):
-    model = Message
-    stream = 'messages'
-    fields = ['__all__']
-
-    @classmethod
-    def group_names(cls, instance):
-        """
-        Returns the iterable of group names to send the object to based on the
-        instance and action performed on it.
-        """
-        return ['thread-{}'.format(instance.thread.pk)]
-
-    def has_permission(self, user, action, pk):
-        """
-        Return True if the user can do action to the pk, False if not.
-        User may be AnonymousUser if no auth hooked up/they're not logged in.
-        Action is one of "create", "delete", "update".
-        """
-        if action == 'create':
-            return True
-
-        return user.is_superuser

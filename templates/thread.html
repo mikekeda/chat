@@ -83,7 +83,7 @@
     socket.onmessage = function message(event) {
       var raw_data = JSON.parse(event.data);
       var action = raw_data.payload.action;
-      var data = raw_data.payload.data;
+      var data = raw_data.payload.data.fields;
       var pk = raw_data.payload.pk;
 
       // On message Update.

@@ -1,10 +1,16 @@
-from channels.routing import route, route_class
+from django.conf.urls import url
 
-from .consumers import ws_connect, ws_disconnect, WsThread
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+
+from .consumers import WsUsers, WsThread
 
 
-channel_routing = [
-    route('websocket.connect', ws_connect, path=r"^/ws/users/$"),
-    route_class(WsThread, path=r"^/ws/thread/(?P<thread>\w+)$"),
-    route('websocket.disconnect', ws_disconnect),
-]
+chat = ProtocolTypeRouter({
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            url(r"^ws/users/$", WsUsers),
+            url(r"^ws/thread/(?P<thread>\w+)$", WsThread),
+        ])
+    ),
+})
