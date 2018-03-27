@@ -19,10 +19,8 @@ class WsUsers(JsonWebsocketConsumer):
             'users',
             self.channel_name
         )
-        self.send_json({
-            'text': json.dumps(Profile.get_online_users())
-        })
         super().connect()
+        self.send_json(Profile.get_online_users())
 
     def disconnect(self, code):
         """ Remove from 'users' group and close the webSocket. """
@@ -31,6 +29,10 @@ class WsUsers(JsonWebsocketConsumer):
             self.channel_name
         )
         self.close()
+
+    def users_update(self, message):
+        """ User binding. """
+        self.send_json(message['content'])
 
 
 class WsThread(JsonWebsocketConsumer):
