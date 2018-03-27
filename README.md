@@ -47,5 +47,3 @@ Useful manage.py commands
     python manage.py jenkins --enable-coverage --pep8-exclude migrations --pylint-rcfile .pylintrc
     # Train Chatterbot
     python manage.py train
-    # Clearing Silk logged data
-    python manage.py silk_clear_request_log
