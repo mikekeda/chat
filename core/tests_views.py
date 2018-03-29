@@ -202,13 +202,13 @@ class ChatViewTest(TestCase):
 
         # Try to open the thread by id (our test thread have id 1).
         resp = self.client.get(reverse('core:thread',
-                                       kwargs={'thread_id': '1'}))
+                                       kwargs={'thread_id': chat[0].pk}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'thread.html')
 
-        # Tread with id 2 doesn't exists.
+        # Tread with id 404 doesn't exists.
         resp = self.client.get(reverse('core:thread',
-                                       kwargs={'thread_id': '2'}))
+                                       kwargs={'thread_id': '404'}))
         self.assertEqual(resp.status_code, 404)
 
     def test_views_call(self):
