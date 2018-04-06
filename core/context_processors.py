@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from .models import Thread, UnreadThread
 
 
@@ -9,7 +11,13 @@ def unread_threads(request):
     if request.user.is_authenticated:
         threads = UnreadThread.objects.filter(user=request.user)\
             .order_by('-date')\
-            .values_list('thread__id', 'thread__name', named=True)[:10]
+            .values_list('thread__id', 'thread__name')[:10]
+
+        # Rename fields (thread__id to id, thread__name to name).
+        threads = [
+            namedtuple('Row', ('id', 'name'))(id=thread[0], name=thread[1])
+            for thread in threads
+        ]
 
         unread_threads_counter = len(threads)
 
