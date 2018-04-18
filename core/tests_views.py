@@ -42,7 +42,7 @@ class ChatViewTest(TestCase):
         # Try to login again (fail).
         self.client.login(username='testuser', password='12345')
         resp = self.client.get(reverse('core:login'))
-        self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
+        self.assertRedirects(resp, reverse(settings.LOGIN_REDIRECT_URL))
 
     def test_views_signup(self):
         resp = self.client.get(reverse('core:signup'))
@@ -52,7 +52,7 @@ class ChatViewTest(TestCase):
         # Try to login again (fail).
         self.client.login(username='testuser', password='12345')
         resp = self.client.get(reverse('core:signup'))
-        self.assertRedirects(resp, settings.LOGIN_REDIRECT_URL)
+        self.assertRedirects(resp, reverse(settings.LOGIN_REDIRECT_URL))
 
     def test_views_logout(self):
         resp = self.client.get(reverse('core:logout'))
