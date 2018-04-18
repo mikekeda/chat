@@ -226,19 +226,16 @@ LOGIN_URL = 'core:login'
 
 LOGOUT_URL = 'core:logout'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'core:user_list'
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://chat.mkeda.me'
-
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'http://chat.mkeda.me'
-
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'core:user_list'
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'core:user_list'
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-
-USE_X_FORWARDED_HOST = True
-
-
 SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('SOCIAL_AUTH_FACEBOOK_KEY')
 SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('SOCIAL_AUTH_FACEBOOK_SECRET')
+
+USE_X_FORWARDED_HOST = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
