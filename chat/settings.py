@@ -74,8 +74,6 @@ INSTALLED_APPS = [
 
 if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
-else:
-    INSTALLED_APPS += ['opbeat.contrib.django']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -93,9 +91,6 @@ MIDDLEWARE = [
 
 if DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
-else:
-    MIDDLEWARE = ['opbeat.contrib.django.middleware.OpbeatAPMMiddleware'] + \
-                 MIDDLEWARE
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
@@ -288,10 +283,4 @@ CHATTERBOT = {
         "chatterbot.corpus.french",
         "chatterbot.corpus.russian"
     ]
-}
-
-OPBEAT = {
-    'ORGANIZATION_ID': get_env_var('OPBEAT_ORGANIZATION_ID'),
-    'APP_ID': get_env_var('OPBEAT_APP_ID'),
-    'SECRET_TOKEN': get_env_var('OPBEAT_SECRET_TOKEN'),
 }
