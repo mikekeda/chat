@@ -235,7 +235,7 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-MAILGUN_SERVER_NAME = 'chat.mkeda.me'
+MAILGUN_SERVER_NAME = 'info.mkeda.me'
 EMAIL_SUBJECT_PREFIX = '[Chat]'
 SERVER_EMAIL = 'admin@chat.mkeda.me'
 
