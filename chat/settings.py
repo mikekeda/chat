@@ -165,6 +165,7 @@ USER_ONLINE_TIMEOUT = 2 * 60  # 2 minutes
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 CHANNEL_LAYERS = {
