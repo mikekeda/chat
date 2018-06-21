@@ -20,7 +20,7 @@ from .forms import AvatarForm
 User = get_user_model()
 
 
-class GetUserMixin(object):
+class GetUserMixin:
     def get_user(self, request, username: str):
         # Anonymous user can't see another profile and can't edit.
         if not request.user.is_authenticated:

@@ -164,6 +164,7 @@ USER_ONLINE_TIMEOUT = 2 * 60  # 2 minutes
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+CSRF_COOKIE_SECURE = True
 
 
 CHANNEL_LAYERS = {
@@ -235,7 +236,7 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-MAILGUN_SERVER_NAME = 'info.mkeda.me'
+MAILGUN_SERVER_NAME = 'chat.mkeda.me'
 EMAIL_SUBJECT_PREFIX = '[Chat]'
 SERVER_EMAIL = 'admin@chat.mkeda.me'
 
