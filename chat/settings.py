@@ -46,9 +46,12 @@ SECRET_KEY = get_env_var(
 DEBUG = bool(get_env_var('DEBUG', True))
 
 INTERNAL_IPS = (
-    '0.0.0.0',
     '127.0.0.1',
 )
+
+ADMINS = [
+    ('Mike', 'mriynuk@gmail.com')
+]
 
 ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', '*').split(',')
 
