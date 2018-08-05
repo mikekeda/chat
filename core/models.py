@@ -93,11 +93,14 @@ class Thread(models.Model):
     last_message = models.DateTimeField(null=True)
 
     def link_to_thread(self):
-        return format_html(
-            '<a href="{}">{}</a>',
-            reverse('core:thread', kwargs={'thread_id': self.pk}),
-            self.name
-        )
+        if self.pk:
+            return format_html(
+                '<a href="{}">{}</a>',
+                reverse('core:thread', kwargs={'thread_id': self.pk}),
+                self.name
+            )
+
+        return ''
 
     link_to_thread.short_description = 'Link to thread'
 
