@@ -48,8 +48,7 @@
                 uri: callerURI,
                 displayName: displayName
             };
-            var userAgent = new SIP.UA(configuration);
-            return userAgent;
+            return new SIP.UA(configuration);
         }
 
         function mediaOptions(audio, video, remoteRender, localRender) {
@@ -69,8 +68,7 @@
 
         function makeCall(userAgent, target, audio, video, remoteRender, localRender) {
             var options = mediaOptions(audio, video, remoteRender, localRender);
-            var session = userAgent.invite('sip:' + target, options);
-            return session;
+            return userAgent.invite('sip:' + target, options);
         }
 
         function setUpVideoInterface(userAgent, target, remoteRenderId, buttonId) {

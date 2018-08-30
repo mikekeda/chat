@@ -71,7 +71,7 @@
 
     $('#btn-chat').click(sendMessage);
     $input.keypress(function(e) {
-      if (e.which == 13) {
+      if (e.which === 13) {
         sendMessage();
       }
     });
@@ -87,14 +87,14 @@
       var pk = raw_data.payload.pk;
 
       // On message Update.
-      if (action == 'update') {
-        $message = $('#message-'+pk);
+      if (action === 'update') {
+        $message = $('#message-' + pk);
         $message.find('.text').text(data.text);
       }
 
       // On message Insert.
-      if (action == 'create') {
-        $message = $('#message-').clone().toggleClass('left', data.user != user).toggleClass('right', data.user == user).removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
+      if (action === 'create') {
+        $message = $('#message-').clone().toggleClass('left', data.user !== user).toggleClass('right', data.user === user).removeClass('hidden-xs-up').attr('id', 'message-' + pk).appendTo('#messages');
         $message.attr('lang', data.lang);
         $message.find('.text').text(data.text);
         $message.find('.date').data('date', data.date).text('{% trans "Just now" %}');
@@ -107,7 +107,7 @@
 
         // Confirm that message was read.
         socket.send(JSON.stringify({
-          read: true,
+          read: true
         }));
 
         if (read_messages.checked) {
@@ -116,13 +116,13 @@
           // Try to use preferenced voice.
           msg.voice = window.speechSynthesis.getVoices().filter(function(voice) {
             if (data.lang === 'en') {
-              return voice.name == 'Google UK English Male';
+              return voice.name === 'Google UK English Male';
             }
             if (data.lang === 'es') {
-              return voice.name == 'Google español';
+              return voice.name === 'Google español';
             }
             if (data.lang === 'fr') {
-              return voice.name == 'Google français';
+              return voice.name === 'Google français';
             }
           })[0];
 
@@ -136,13 +136,13 @@
       }
 
       // On message Delete.
-      if (action == 'delete') {
+      if (action === 'delete') {
         $('#message-'+pk).remove();
       }
       $chat.scrollTop($chat.prop('scrollHeight'));
     };
 
-    if (socket.readyState == WebSocket.OPEN) {
+    if (socket.readyState === WebSocket.OPEN) {
       socket.onopen();
     }
   </script>
