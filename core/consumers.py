@@ -72,7 +72,8 @@ class WsThread(JsonWebsocketConsumer):
                 for user in message.thread.users.all():
                     if user.username == 'chatbot':
                         # This is a message for chat bot.
-                        chatbot_response(self.thread_id, content.get('text'))
+                        chatbot_response.delay(self.thread_id,
+                                               content.get('text'))
                     else:
                         UnreadThread.objects.get_or_create(
                             thread_id=self.thread_id,
