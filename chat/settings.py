@@ -261,7 +261,9 @@ USE_X_FORWARDED_HOST = True
 
 STATIC_ROOT = '/home/voron/sites/cdn/chat'
 
-STATIC_URL = '/static/' if DEBUG else 'https://cdn.mkeda.me/chat/'
+STATIC_URL = 'https://storage.googleapis.com/cdn.mkeda.me/chat/'
+if DEBUG:
+    STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     ("", os.path.join(BASE_DIR, "static")),
