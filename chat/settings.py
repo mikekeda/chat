@@ -304,7 +304,14 @@ ASGI_APPLICATION = "core.routing.chat"
 CHATTERBOT = {
     'name': 'Chat Bot',
     'logic_adapters': [
-        'chatterbot.logic.BestMatch'
+        {
+            'import_path': 'chatterbot.logic.BestMatch',
+            'default_response': 'I am sorry, but I do not understand.',
+            'maximum_similarity_threshold': 0.7
+        },
+        {
+            'import_path': 'chatterbot.logic.MathematicalEvaluation',
+        },
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
     'storage_adapter': 'chatterbot.storage.DjangoStorageAdapter',
