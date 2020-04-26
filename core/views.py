@@ -21,7 +21,8 @@ User = get_user_model()
 
 
 class GetUserMixin:
-    def get_user(self, request, username: str):
+    @staticmethod
+    def get_user(request, username: str):
         # Anonymous user can't see another profile and can't edit.
         if not request.user.is_authenticated:
             return None
@@ -81,7 +82,7 @@ class ProfileView(View, GetUserMixin):
     """ User profile. """
     def get(self, request, username):
         """ View user profile. """
-        user = GetUserMixin().get_user(request, username)
+        user = self.get_user(request, username)
         if not user:
             return redirect_to_login(request.path)
 
@@ -102,7 +103,7 @@ class ProfileView(View, GetUserMixin):
 
     def post(self, request, username):
         """ Update user. """
-        user = GetUserMixin().get_user(request, username)
+        user = self.get_user(request, username)
         if not user:
             return redirect_to_login(request.path)
 
@@ -141,7 +142,7 @@ class ThreadView(View, GetUserMixin):
     """ Thread. """
     def get(self, request, username=None, thread_id=None):
         """ Thread page. """
-        if not GetUserMixin().get_user(request, username):
+        if not self.get_user(request, username):
             return redirect_to_login(request.path)
 
         interlocutor = None
@@ -206,6 +207,7 @@ class ThreadView(View, GetUserMixin):
             'interlocutor': interlocutor,
         })
 
+    # noinspection PyMethodMayBeStatic
     def post(self, request, thread_id):
         """" Thread editing. """
         allowed_fields = ('name',)

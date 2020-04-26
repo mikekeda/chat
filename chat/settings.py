@@ -58,7 +58,7 @@ SECRET_KEY = get_env_var(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(get_env_var('DEBUG', True))
+DEBUG = bool(get_env_var('DEBUG', 'True'))
 
 INTERNAL_IPS = (
     '127.0.0.1',
@@ -308,6 +308,9 @@ CHATTERBOT = {
             'import_path': 'chatterbot.logic.BestMatch',
             'default_response': 'I am sorry, but I do not understand.',
             'maximum_similarity_threshold': 0.1
+        },
+        {
+            'import_path': 'chatterbot.logic.UnitConversion',
         },
         {
             'import_path': 'chatterbot.logic.MathematicalEvaluation',
