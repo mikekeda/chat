@@ -17,23 +17,6 @@ channel_layer = get_channel_layer()
 User = get_user_model()
 
 
-def get_username_by_uid(obj):
-    """ Helper function to get user username by user id. """
-    # Try to get username from the cache to avoid unneeded queries,
-    # pattern is 'username_by_id_<user_id>'
-    username = cache.get('username_by_id_{}'.format(obj.user_id))
-    if not username:
-        # We don't have the username - get username and set it to the cache.
-        username = obj.user.username
-        cache.set(
-            'username_by_id_{}'.format(obj.user_id),
-            username,
-            settings.USER_ONLINE_TIMEOUT
-        )
-
-    return username
-
-
 class Profile(models.Model):
     user = models.OneToOneField(
         User,
@@ -71,10 +54,6 @@ class Profile(models.Model):
             )
         return 'No location available'
 
-    def online(self):
-        """ Check online status (if Redis still has key 'seen_username'). """
-        return cache.get('seen_{}'.format(get_username_by_uid(self)))
-
     @staticmethod
     def get_online_users():
         """ Return a list of usernames of online users. """
@@ -84,7 +63,7 @@ class Profile(models.Model):
         ]
 
     def __str__(self):
-        return get_username_by_uid(self)
+        return self.user.username
 
 
 class Thread(models.Model):
@@ -127,7 +106,7 @@ class UnreadThread(models.Model):
     link_to_thread.short_description = 'Link to thread'
 
     def __str__(self):
-        return '{}: {}'.format(self.thread_id, get_username_by_uid(self))
+        return f'{self.thread_id}: {self.user.username}'
 
 
 class Message(models.Model):
@@ -202,7 +181,7 @@ class Message(models.Model):
         )
 
     def __str__(self):
-        return '{}: {}'.format(get_username_by_uid(self), self.text[:100])
+        return f'{self.user.username}: {self.text[:100]}'
 
 
 class FriendshipRequest(models.Model):

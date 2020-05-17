@@ -93,7 +93,13 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar', 'django_jenkins']
+    from debug_toolbar.settings import PANELS_DEFAULTS
+
+    INSTALLED_APPS += ['debug_toolbar', 'django_jenkins', 'debug_toolbar_line_profiler']
+    DEBUG_TOOLBAR_PANELS = PANELS_DEFAULTS + [
+        'ddt_request_history.panels.request_history.RequestHistoryPanel',
+        'debug_toolbar_line_profiler.panel.ProfilingPanel',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

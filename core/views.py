@@ -179,10 +179,10 @@ class ThreadView(View, GetUserMixin):
             }
 
         # Get last 50 messages.
-        messages = Message.objects.select_related('user') \
+        messages = Message.objects.select_related('user', 'user__profile') \
                           .filter(thread=thread).order_by('-date')[:50]
         for message in messages:
-            if message.user.pk not in users:
+            if message.user_id not in users:
                 try:
                     avatar = message.user.profile.avatar.url
                 except Profile.DoesNotExist:
@@ -192,13 +192,13 @@ class ThreadView(View, GetUserMixin):
                     )
                     avatar = profile.avatar.url
 
-                users[message.user.pk] = {
+                users[message.user_id] = {
                     'username': message.user.username,
                     'avatar': avatar,
                 }
         # Now we have all needed info - update messages.
         for message in messages:
-            message.avatar = users[message.user.pk]['avatar']
+            message.avatar = users[message.user_id]['avatar']
 
         return render(request, 'thread.html', {
             'thread': thread,

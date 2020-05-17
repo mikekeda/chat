@@ -10,6 +10,8 @@ User = get_user_model()
 
 
 class BaseModelAdmin(admin.ModelAdmin):
+    list_select_related = ['user']
+
     def get_changelist_instance(self, request):
         changelist = super().get_changelist_instance(request)
 
