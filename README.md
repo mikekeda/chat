@@ -2,6 +2,7 @@ Chat
 ======================
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/339b4ac8f0834823baf0f4913f5878d7)](https://app.codacy.com/manual/mikekeda/chat?utm_source=github.com&utm_medium=referral&utm_content=mikekeda/chat&utm_campaign=Badge_Grade_Dashboard)
+[![Requirements Status](https://requires.io/github/mikekeda/chat/requirements.svg?branch=master)](https://requires.io/github/mikekeda/chat/requirements/?branch=master)
 
 This is site where you chat with other people.
 Link to the site - [https://chat.mkeda.me](https://chat.mkeda.me)
