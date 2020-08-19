@@ -114,22 +114,22 @@ class ProfileView(View, GetUserMixin):
             if form.is_valid():
                 form.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            allowed_fields = ('first_name', 'last_name', 'email')
-            field = request.POST.get('name', '')
-            value = request.POST.get('value', '')
-            if field and field in allowed_fields:
-                setattr(user, field, value)
-                try:
-                    user.clean_fields()
-                    user.save()
-                    return JsonResponse({'success': True})
-                except ValidationError as e:
-                    return JsonResponse(
-                        ', '.join(e.message_dict[field]),
-                        safe=False,
-                        status=422
-                    )
+
+        allowed_fields = ('first_name', 'last_name', 'email')
+        field = request.POST.get('name', '')
+        value = request.POST.get('value', '')
+        if field and field in allowed_fields:
+            setattr(user, field, value)
+            try:
+                user.clean_fields()
+                user.save()
+                return JsonResponse({'success': True})
+            except ValidationError as e:
+                return JsonResponse(
+                    ', '.join(e.message_dict[field]),
+                    safe=False,
+                    status=422
+                )
 
         return JsonResponse(
             ugettext("You can't change this field"),

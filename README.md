@@ -2,7 +2,7 @@ Chat
 ======================
 
 This is site where you chat with other people.
-Link to the site - https://chat.mkeda.me
+Link to the site - [https://chat.mkeda.me](https://chat.mkeda.me)
 
 Installation
 ------------
