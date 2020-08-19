@@ -100,8 +100,8 @@
   height: 13px;
   position: absolute;
   opacity: 0.6;
-  top: calc(50% - .8rem);
-  right: .8rem;
+  top: calc(50% - 0.8rem);
+  right: 0.8rem;
   margin-top: -6px;
   z-index: 100;
 }
@@ -131,10 +131,10 @@
   padding: 10px;
 }
 
-.glyphicon-ok:before {
+.glyphicon-ok::before {
   content: "✓";
 }
 
-.glyphicon-remove:before {
+.glyphicon-remove::before {
   content: "✗";
 }
