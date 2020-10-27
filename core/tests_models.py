@@ -1,9 +1,11 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Profile
+from core.models import Profile
+
+User = get_user_model()
 
 
 class ChatModelTest(TestCase):
