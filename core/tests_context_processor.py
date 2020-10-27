@@ -1,11 +1,13 @@
 from unittest import mock
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from .context_processors import unread_threads
-from .models import Thread, UnreadThread
+from core.context_processors import unread_threads
+from core.models import Thread, UnreadThread
+
+User = get_user_model()
 
 
 class ChatContextProcessorTest(TestCase):
