@@ -139,8 +139,8 @@ class Message(models.Model):
 
         self.thread.last_message = datetime.datetime.now()
         self.thread.save()
-        super(Message, self).save(force_insert=False, force_update=False,
-                                  using=None, update_fields=None)
+        super().save(force_insert=False, force_update=False,
+                     using=None, update_fields=None)
 
         # Update the message in the thread via websockets.
         async_to_sync(channel_layer.group_send)(
@@ -258,8 +258,8 @@ class Friend(models.Model):
         # Ensure users can't be friends with themselves.
         if self.to_user == self.from_user:
             raise ValidationError("Users cannot be friends with themselves.")
-        super(Friend, self).save(force_insert=False, force_update=False,
-                                 using=None, update_fields=None)
+        super().save(force_insert=False, force_update=False,
+                     using=None, update_fields=None)
 
     def __str__(self):
         return "User #{} is friends with #{}".format(self.to_user_id,
