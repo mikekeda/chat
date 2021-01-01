@@ -1,5 +1,5 @@
 celery==5.0.5
-channels==3.0.2
+channels==3.0.3
 channels-redis==3.2.0
 ChatterBot==1.0.8
 chatterbot-corpus==1.2.0
