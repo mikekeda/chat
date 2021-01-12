@@ -1,11 +1,10 @@
 import langid
-
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.conf import settings
 
-from .models import Profile, UnreadThread, Message
-from .tasks import chatbot_response
+from core.models import Message, Profile, UnreadThread
+from core.tasks import chatbot_response
 
 langid.set_languages([code for code, _ in settings.LANGUAGES])
 

@@ -3,7 +3,6 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import serializers
