@@ -3,12 +3,13 @@ channels==3.0.3
 channels-redis==3.2.0
 ChatterBot==1.0.8
 chatterbot-corpus==1.2.0
-Django==3.1.5
+Django==3.0.11
 django-redis==4.12.1
 django-widget-tweaks==1.4.8
 geoip2==4.1.0
 langid==1.1.6
 Pillow==8.1.0
+pint==0.16.1
 psycopg2-binary==2.8.6
 requests==2.25.1
 social-auth-app-django==4.0.0
