@@ -76,10 +76,6 @@
       }
     });
 
-    socket.onopen = function open() {
-      console.log('WebSockets connection created.');
-    };
-
     socket.onmessage = function message(event) {
       var raw_data = JSON.parse(event.data);
       var action = raw_data.payload.action;
@@ -141,9 +137,5 @@
       }
       $chat.scrollTop($chat.prop('scrollHeight'));
     };
-
-    if (socket.readyState === WebSocket.OPEN) {
-      socket.onopen();
-    }
   </script>
 {% endblock script %}

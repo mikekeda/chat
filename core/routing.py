@@ -7,12 +7,16 @@ from channels.auth import AuthMiddlewareStack
 from core.consumers import WsUsers, WsThread
 
 
-chat = ProtocolTypeRouter({
-    "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
-        URLRouter([
-            url(r"^ws/users/$", WsUsers.as_asgi()),
-            url(r"^ws/thread/(?P<thread>\w+)$", WsThread.as_asgi()),
-        ])
-    ),
-})
+chat = ProtocolTypeRouter(
+    {
+        "http": get_asgi_application(),
+        "websocket": AuthMiddlewareStack(
+            URLRouter(
+                [
+                    url(r"^ws/users/$", WsUsers.as_asgi()),
+                    url(r"^ws/thread/(?P<thread>\w+)$", WsThread.as_asgi()),
+                ]
+            )
+        ),
+    }
+)

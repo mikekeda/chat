@@ -11,7 +11,7 @@ from django.core.cache import cache
 
 from core.models import Message, Profile
 
-app = Celery('chat')
+app = Celery("chat")
 
 channel_layer = get_channel_layer()
 User = get_user_model()
@@ -21,32 +21,24 @@ langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
 @app.task
-def update_user_statuses():
+def update_user_statuses() -> None:
     """ Task to update user online statuses via websockets. """
     # Chat bot is always online.
     now = datetime.datetime.now()
-    cache.set('seen_chatbot', now, settings.USER_ONLINE_TIMEOUT)
+    cache.set("seen_chatbot", now, settings.USER_ONLINE_TIMEOUT)
 
     async_to_sync(channel_layer.group_send)(
-        'users',
-        {
-            'type': 'users.update',
-            'content': Profile.get_online_users()
-        }
+        "users", {"type": "users.update", "content": Profile.get_online_users()}
     )
 
 
 @shared_task
-def chatbot_response(thread_id, text):
+def chatbot_response(thread_id: int, text: str) -> None:
     """ Task to send a response from Chatbot. """
-    chatbot_user = User.objects.get(username='chatbot')
+    chatbot_user = User.objects.get(username="chatbot")
 
     response = str(chatbot.get_response(text))
 
-    message = Message(
-        thread_id=thread_id,
-        user=chatbot_user,
-        text=response
-    )
+    message = Message(thread_id=thread_id, user=chatbot_user, text=response)
     message.lang, _ = langid.classify(message.text)
     message.save()
