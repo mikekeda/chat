@@ -11,13 +11,14 @@ User = get_user_model()
 class ChatModelTest(TestCase):
     def setUp(self):
         """ Setup some initial users. """
+        self.password = User.objects.make_random_password()
         self.user_bob = User.objects.create_user(
-            username="test_model_user1", password="12345"
+            username="test_model_user1", password=self.password
         )
         self.user_bob.save()
 
         self.user_steve = User.objects.create_user(
-            username="test_model_user2", password="12345"
+            username="test_model_user2", password=self.password
         )
         self.user_steve.save()
 
@@ -28,7 +29,7 @@ class ChatModelTest(TestCase):
         self.assertNotIn("test_model_user2", result)
 
         # Go to any page to trigger active_user_middleware middleware.
-        self.client.login(username="test_model_user1", password="12345")
+        self.client.login(username="test_model_user1", password=self.password)
         self.client.get(reverse("core:user_list"))
 
         # Check if test_model_user1 are online.
@@ -40,7 +41,7 @@ class ChatModelTest(TestCase):
         self.assertIn("test_model_user1", result)
 
         # Go to any page to trigger active_user_middleware middleware.
-        self.client.login(username="test_model_user2", password="12345")
+        self.client.login(username="test_model_user2", password=self.password)
         self.client.get(reverse("core:user_list"))
 
         # Check if user are online.

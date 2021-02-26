@@ -17,12 +17,17 @@ class ChatViewTest(TestCase):
         self.mock_cache = view_patcher_cache.start()
         self.addCleanup(view_patcher_cache.stop)
         # Create usual user.
-        test_user = User.objects.create_user(username="testuser", password="12345")
+        self.password = User.objects.make_random_password()
+        test_user = User.objects.create_user(
+            username="testuser", password=self.password
+        )
         test_user.save()
-        test_user2 = User.objects.create_user(username="testuser2", password="12345")
+        test_user2 = User.objects.create_user(
+            username="testuser2", password=self.password
+        )
         test_user2.save()
         test_admin = User.objects.create_superuser(
-            username="testadmin", email="myemail@test.com", password="12345"
+            username="testadmin", email="myemail@test.com", password=self.password
         )
         test_admin.save()
 
@@ -38,7 +43,7 @@ class ChatViewTest(TestCase):
         self.assertTemplateUsed(resp, "login.html")
 
         # Try to login again (fail).
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:login"))
         self.assertRedirects(resp, reverse(settings.LOGIN_REDIRECT_URL))
 
@@ -48,14 +53,14 @@ class ChatViewTest(TestCase):
         self.assertTemplateUsed(resp, "signup.html")
 
         # Try to login again (fail).
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:signup"))
         self.assertRedirects(resp, reverse(settings.LOGIN_REDIRECT_URL))
 
     def test_views_logout(self):
         resp = self.client.get(reverse("core:logout"))
         self.assertRedirects(resp, "/login?next=/logout")
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:logout"))
         self.assertRedirects(resp, reverse("core:login"))
 
@@ -64,7 +69,7 @@ class ChatViewTest(TestCase):
         resp = self.client.get(reverse("core:user_list"))
         self.assertRedirects(resp, "/login?next=/")
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "user_list.html")
@@ -73,7 +78,7 @@ class ChatViewTest(TestCase):
         resp = self.client.get("/chat/chatbot")
         self.assertRedirects(resp, "/login?next=/chat/chatbot")
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get("/chat/chatbot")
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "thread.html")
@@ -82,11 +87,11 @@ class ChatViewTest(TestCase):
         resp = self.client.get(reverse("core:user", kwargs={"username": "testuser"}))
         self.assertRedirects(resp, "/login?next=/user/testuser")
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:user", kwargs={"username": "testuser"}))
         self.assertEqual(resp.status_code, 200)
 
-        self.client.login(username="testuser2", password="12345")
+        self.client.login(username="testuser2", password=self.password)
         resp = self.client.get(reverse("core:user", kwargs={"username": "testuser"}))
         self.assertEqual(resp.status_code, 200)
 
@@ -96,7 +101,7 @@ class ChatViewTest(TestCase):
             {"first_name": "test1"},
         )
         self.assertRedirects(resp, "/login?next=/user/testuser")
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         # Need to create profile for the users.
         resp = self.client.get(reverse("core:user", kwargs={"username": "testuser"}))
         self.assertEqual(resp.status_code, 200)
@@ -142,7 +147,7 @@ class ChatViewTest(TestCase):
         )
 
         # Admin can update profile for any user.
-        self.client.login(username="testadmin", password="12345")
+        self.client.login(username="testadmin", password=self.password)
         resp = self.client.post(
             reverse("core:user", kwargs={"username": "testuser"}),
             {"name": "first_name", "value": "test name"},
@@ -153,7 +158,7 @@ class ChatViewTest(TestCase):
         self.assertEqual(user.first_name, "test name")
 
         # User can update only his own profile.
-        self.client.login(username="testuser2", password="12345")
+        self.client.login(username="testuser2", password=self.password)
         resp = self.client.post(
             reverse("core:user", kwargs={"username": "testuser"}),
             {"name": "first_name", "value": "test name fail"},
@@ -167,7 +172,7 @@ class ChatViewTest(TestCase):
         self.assertRedirects(resp, "/login?next=/chat/testuser2")
 
         # Go to chat page.
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:chat", kwargs={"username": "testuser2"}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "thread.html")
@@ -193,7 +198,7 @@ class ChatViewTest(TestCase):
         self.assertRedirects(resp, "/login?next=/call/testuser2")
 
         # Go to chat page.
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:call", kwargs={"username": "testuser2"}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "call.html")
@@ -202,11 +207,11 @@ class ChatViewTest(TestCase):
         resp = self.client.get(reverse("core:users_map"))
         self.assertRedirects(resp, "/admin/login/?next=/users")
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:users_map"))
         self.assertRedirects(resp, "/admin/login/?next=/users")
 
-        self.client.login(username="testadmin", password="12345")
+        self.client.login(username="testadmin", password=self.password)
         resp = self.client.get(reverse("core:users_map"))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "users_map.html")
