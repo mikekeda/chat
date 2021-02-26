@@ -3,7 +3,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 from django.core.cache import cache
 from django.dispatch import receiver
 
-from admin.models import Profile
+from core.models import Profile
 
 
 def get_client_ip(request) -> str:
