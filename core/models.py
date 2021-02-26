@@ -48,9 +48,9 @@ class Profile(models.Model):
     @staticmethod
     def get_online_users():
         """ Return a list of usernames of online users. """
-        prefix = "seen_"  # pattern is 'seen_username''
+        prefix = "seen_"  # pattern is 'seen_username'
 
-        return [key[5:] for key in cache.keys(prefix)]
+        return [key[5:] for key in cache.keys(f"{prefix}*")]
 
     def __str__(self):
         return self.user.username
