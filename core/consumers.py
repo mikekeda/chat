@@ -1,7 +1,6 @@
 import langid
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
-from django.conf import settings
 
 from core.models import Message, Profile, UnreadThread
 from core.tasks import chatbot_response
