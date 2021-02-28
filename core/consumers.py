@@ -6,8 +6,6 @@ from django.conf import settings
 from core.models import Message, Profile, UnreadThread
 from core.tasks import chatbot_response
 
-langid.set_languages([code for code, _ in settings.LANGUAGES])
-
 
 class WsUsers(JsonWebsocketConsumer):
     """ WebsocketConsumer related to 'users' group. """

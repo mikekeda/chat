@@ -16,7 +16,7 @@ app = Celery("chat")
 channel_layer = get_channel_layer()
 User = get_user_model()
 
-chatbot = ChatBot(**settings.CHATTERBOT)
+chatbot = None  # lazy initialization due to a bug with Django 3.1.7
 langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
@@ -35,6 +35,11 @@ def update_user_statuses() -> None:
 @shared_task
 def chatbot_response(thread_id: int, text: str) -> None:
     """ Task to send a response from Chatbot. """
+    global chatbot  # lazy initialization due to a bug with Django 3.1.7
+
+    if chatbot is None:
+        chatbot = ChatBot(**settings.CHATTERBOT)
+
     chatbot_user = User.objects.get(username="chatbot")
 
     response = str(chatbot.get_response(text))
