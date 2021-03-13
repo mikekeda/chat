@@ -5,6 +5,8 @@ Django settings for chat project.
 import os
 import requests
 
+from django.utils.log import DEFAULT_LOGGING as LOGGING
+
 SITE_ENV_PREFIX = "CHAT"
 
 
@@ -301,4 +303,9 @@ CHATTERBOT = {
         "chatterbot.corpus.french",
         "chatterbot.corpus.russian",
     ],
+}
+
+LOGGING["loggers"]["chat"] = {
+    "handlers": ["django.server"],
+    "level": "INFO",
 }

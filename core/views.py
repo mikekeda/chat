@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -14,10 +15,12 @@ from django.urls import reverse
 from django.utils.translation import ugettext
 from django.views import View
 
-from .models import Profile, Thread, UnreadThread, Message
-from .forms import AvatarForm
+from core.models import Profile, Thread, UnreadThread, Message
+from core.forms import AvatarForm
+from core.signals import get_client_ip
 
 User = get_user_model()
+log = logging.getLogger("chat")
 
 
 class GetUserMixin:
@@ -273,6 +276,9 @@ def log_in(request):
         if form.is_valid():
             login(request, form.get_user())
             return redirect(reverse("core:user_list"))
+        else:
+            ip = get_client_ip(request)
+            log.warning("Failed login attempt from %s: %s, %s", ip, request.POST, request.META)
 
     return render(request, "login.html", {"form": form})
 
