@@ -278,7 +278,9 @@ def log_in(request):
             return redirect(reverse("core:user_list"))
         else:
             ip = get_client_ip(request)
-            log.warning("Failed login attempt from %s: %s, %s", ip, request.POST, request.META)
+            log.warning(
+                "Failed login attempt from %s: %s, %s", ip, request.POST, request.META
+            )
 
     return render(request, "login.html", {"form": form})
 
