@@ -279,6 +279,8 @@ GOOGLE_MAP_API_KEY = get_env_var("GOOGLE_MAP_API_KEY")
 GEOIP_PATH = "geo/"
 
 ASGI_APPLICATION = "core.routing.chat"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 CHATTERBOT = {
     "name": "Chat Bot",
     "logic_adapters": [
