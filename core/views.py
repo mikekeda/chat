@@ -132,7 +132,9 @@ class ProfileView(View, GetUserMixin):
             form = AvatarForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
                 form.save()
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            return HttpResponseRedirect(
+                reverse("core:user", kwargs={"username": username})
+            )
 
         allowed_fields = ("first_name", "last_name", "email")
         field = request.POST.get("name", "")
