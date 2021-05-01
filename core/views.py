@@ -48,7 +48,7 @@ class GetUserMixin:
 
 @login_required
 def user_list(request):
-    """ User list. """
+    """User list."""
     users = (
         User.objects.exclude(id=request.user.id)
         .values_list("username", "last_login", named=True)
@@ -60,7 +60,7 @@ def user_list(request):
 
 @staff_member_required
 def user_map(request):
-    """ Maps with users. """
+    """Maps with users."""
     users = (
         Profile.objects.select_related("user")
         .filter(lat__isnull=False, lon__isnull=False)
@@ -88,15 +88,15 @@ def user_map(request):
 
 
 def about_page(request):
-    """ About page. """
+    """About page."""
     return render(request, "about.html")
 
 
 class ProfileView(View, GetUserMixin):
-    """ User profile. """
+    """User profile."""
 
     def get(self, request, username):
-        """ View user profile. """
+        """View user profile."""
         user = self.get_user(request, username)
         if not user:
             return redirect_to_login(request.path)
@@ -121,7 +121,7 @@ class ProfileView(View, GetUserMixin):
         )
 
     def post(self, request, username):
-        """ Update user. """
+        """Update user."""
         user = self.get_user(request, username)
         if not user:
             return redirect_to_login(request.path)
@@ -156,10 +156,10 @@ class ProfileView(View, GetUserMixin):
 
 
 class ThreadView(View, GetUserMixin):
-    """ Thread. """
+    """Thread."""
 
     def get(self, request, username=None, thread_id=None):
-        """ Thread page. """
+        """Thread page."""
         if not self.get_user(request, username):
             return redirect_to_login(request.path)
 
@@ -231,7 +231,7 @@ class ThreadView(View, GetUserMixin):
 
     # noinspection PyMethodMayBeStatic
     def post(self, request, thread_id):
-        """" Thread editing. """
+        """ " Thread editing."""
         allowed_fields = ("name",)
         field = request.POST.get("name", "")
         value = request.POST.get("value", "")
@@ -256,7 +256,7 @@ class ThreadView(View, GetUserMixin):
 
 @login_required
 def call_view(request, username):
-    """ Call page. """
+    """Call page."""
     interlocutor = get_object_or_404(User, username=username)
 
     return render(

@@ -22,7 +22,7 @@ langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 @app.task
 def update_user_statuses() -> None:
-    """ Task to update user online statuses via websockets. """
+    """Task to update user online statuses via websockets."""
     # Chat bot is always online.
     now = datetime.datetime.now()
     cache.set("seen_chatbot", now, settings.USER_ONLINE_TIMEOUT)
@@ -34,7 +34,7 @@ def update_user_statuses() -> None:
 
 @shared_task
 def chatbot_response(thread_id: int, text: str) -> None:
-    """ Task to send a response from Chatbot. """
+    """Task to send a response from Chatbot."""
     global chatbot  # lazy initialization due to a bug with Django 3.1.7
 
     if chatbot is None:

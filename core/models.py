@@ -33,7 +33,7 @@ class Profile(models.Model):
     preview.short_description = "Avatar preview"
 
     def location(self):
-        """ Show user location on a map. """
+        """Show user location on a map."""
         if self.lat is not None and self.lon is not None:
             return format_html(
                 '<img src="{}"/>',
@@ -47,7 +47,7 @@ class Profile(models.Model):
 
     @staticmethod
     def get_online_users():
-        """ Return a list of usernames of online users. """
+        """Return a list of usernames of online users."""
         prefix = "seen_"  # pattern is 'seen_username'
 
         return [key[5:] for key in cache.keys(f"{prefix}*")]
@@ -163,7 +163,7 @@ class Message(models.Model):
 
 
 class FriendshipRequest(models.Model):
-    """ Model to represent friendship requests. """
+    """Model to represent friendship requests."""
 
     from_user = models.ForeignKey(
         User, related_name="friendship_requests_sent", on_delete=models.CASCADE
@@ -180,7 +180,7 @@ class FriendshipRequest(models.Model):
         unique_together = (("from_user", "to_user"),)
 
     def accept(self):
-        """ Accept this friendship request. """
+        """Accept this friendship request."""
         Friend.objects.create(from_user=self.from_user, to_user=self.to_user)
         Friend.objects.create(from_user=self.to_user, to_user=self.from_user)
 
@@ -192,16 +192,16 @@ class FriendshipRequest(models.Model):
         ).delete()
 
     def reject(self):
-        """ Reject this friendship request. """
+        """Reject this friendship request."""
         self.rejected = datetime.datetime.now()
         self.save()
 
     def cancel(self):
-        """ Cancel this friendship request. """
+        """Cancel this friendship request."""
         self.delete()
 
     def mark_viewed(self):
-        """ Mark this friendship request as viewed. """
+        """Mark this friendship request as viewed."""
         self.viewed = datetime.datetime.now()
         self.save()
 
@@ -212,7 +212,7 @@ class FriendshipRequest(models.Model):
 
 
 class Friend(models.Model):
-    """ Model to represent Friendships. """
+    """Model to represent Friendships."""
 
     to_user = models.ForeignKey(User, related_name="friends", on_delete=models.CASCADE)
     from_user = models.ForeignKey(

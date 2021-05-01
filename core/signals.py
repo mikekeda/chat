@@ -7,7 +7,7 @@ from core.models import Profile
 
 
 def get_client_ip(request) -> str:
-    """ Get user ip. """
+    """Get user ip."""
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
         ip = x_forwarded_for.split(",")[0]
@@ -18,7 +18,7 @@ def get_client_ip(request) -> str:
 
 @receiver(user_logged_in)
 def on_user_loggedin(sender, user, request, **kwargs) -> None:
-    """ Update user coordinates if they are empty. """
+    """Update user coordinates if they are empty."""
     if user.is_authenticated:
         # If there no user profile - create it.
         profile, _ = Profile.objects.get_or_create(user=user)
@@ -32,7 +32,7 @@ def on_user_loggedin(sender, user, request, **kwargs) -> None:
 
 @receiver(user_logged_out)
 def on_user_logout(sender, **kwargs) -> None:
-    """ Update user online status. """
+    """Update user online status."""
     user = kwargs.get("user")
     if user.is_authenticated:
         cache.delete("seen_{}".format(user.username))

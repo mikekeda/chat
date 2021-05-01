@@ -7,31 +7,31 @@ from core.tasks import chatbot_response
 
 
 class WsUsers(JsonWebsocketConsumer):
-    """ WebsocketConsumer related to 'users' group. """
+    """WebsocketConsumer related to 'users' group."""
 
     def connect(self):
-        """ Adds to 'users' group and send a list of active users. """
+        """Adds to 'users' group and send a list of active users."""
         async_to_sync(self.channel_layer.group_add)("users", self.channel_name)
         super().connect()
         self.send_json(Profile.get_online_users())
 
     def disconnect(self, code):
-        """ Remove from 'users' group and close the webSocket. """
+        """Remove from 'users' group and close the webSocket."""
         async_to_sync(self.channel_layer.group_discard)("users", self.channel_name)
         self.close()
 
     def users_update(self, message):
-        """ User binding. """
+        """User binding."""
         self.send_json(message["content"])
 
 
 class WsThread(JsonWebsocketConsumer):
-    """ WebsocketConsumer related to specific 'thread' group. """
+    """WebsocketConsumer related to specific 'thread' group."""
 
     thread_id = None
 
     def connect(self):
-        """ Adds to specific 'thread' group. """
+        """Adds to specific 'thread' group."""
         self.thread_id = int(self.scope["url_route"]["kwargs"].get("thread"))
 
         async_to_sync(self.channel_layer.group_add)(
@@ -40,7 +40,7 @@ class WsThread(JsonWebsocketConsumer):
         super().connect()
 
     def disconnect(self, code):
-        """ Remove from specific 'thread' group and close the webSocket. """
+        """Remove from specific 'thread' group and close the webSocket."""
         async_to_sync(self.channel_layer.group_discard)(
             "thread-{}".format(str(self.thread_id)), self.channel_name
         )
@@ -74,5 +74,5 @@ class WsThread(JsonWebsocketConsumer):
             ).delete()
 
     def message_update(self, message):
-        """ Message binding. """
+        """Message binding."""
         self.send_json(message["content"])

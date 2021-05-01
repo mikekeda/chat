@@ -4,7 +4,7 @@ from .models import Thread, UnreadThread
 
 
 def unread_threads(request):
-    """ Get unread messages. """
+    """Get unread messages."""
     threads = []
     unread_threads_counter = 0
 
