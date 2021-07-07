@@ -8,7 +8,7 @@ django-redis==5.0.0
 django-widget-tweaks==1.4.8
 geoip2==4.2.0
 langid==1.1.6
-Pillow==8.3.0
+Pillow==8.3.1
 pint==0.17
 psycopg2-binary==2.9.1
 requests==2.25.1
