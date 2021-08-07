@@ -12,5 +12,5 @@ Pillow==8.3.1
 pint==0.17
 psycopg2-binary==2.9.1
 requests==2.26.0
-social-auth-app-django==4.0.0
+social-auth-app-django==5.0.0
 social-auth-core==4.1.0
