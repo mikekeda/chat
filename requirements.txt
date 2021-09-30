@@ -1,6 +1,6 @@
 celery==5.1.2
 channels==3.0.4
-channels-redis==3.3.0
+channels-redis==3.3.1
 ChatterBot==1.0.8
 chatterbot-corpus==1.2.0
 Django==3.2.7
