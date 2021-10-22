@@ -5,7 +5,7 @@ ChatterBot==1.0.8
 chatterbot-corpus==1.2.0
 Django==3.2.8
 django-redis==5.0.0
-django-widget-tweaks==1.4.8
+django-widget-tweaks==1.4.9
 geoip2==4.4.0
 langid==1.1.6
 Pillow==8.4.0
