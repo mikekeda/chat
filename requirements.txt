@@ -9,7 +9,7 @@ django-widget-tweaks==1.4.9
 geoip2==4.4.0
 langid==1.1.6
 Pillow==8.4.0
-pint==0.17
+pint==0.18
 psycopg2-binary==2.9.1
 requests==2.26.0
 social-auth-app-django==5.0.0
