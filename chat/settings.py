@@ -250,7 +250,6 @@ SERVER_EMAIL = "admin@chat.mkeda.me"
 USE_X_FORWARDED_HOST = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_ROOT = "/home/voron/sites/cdn/chat"
 
@@ -306,6 +305,8 @@ CHATTERBOT = {
         "chatterbot.corpus.russian",
     ],
 }
+
+OPENAI_API_KEY = get_env_var("OPENAI_API_KEY")
 
 LOGGING["loggers"]["chat"] = {
     "handlers": ["django.server"],

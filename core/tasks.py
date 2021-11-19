@@ -8,6 +8,7 @@ from chatterbot import ChatBot
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+import openai
 
 from core.models import Message, Profile
 
@@ -19,6 +20,8 @@ User = get_user_model()
 chatbot = None  # lazy initialization due to a bug with Django 3.1.7
 langid.set_languages([code for code, _ in settings.LANGUAGES])
 
+openai.api_key = settings.OPENAI_API_KEY
+
 
 @app.task
 def update_user_statuses() -> None:
@@ -26,6 +29,7 @@ def update_user_statuses() -> None:
     # Chat bot is always online.
     now = datetime.datetime.now()
     cache.set("seen_chatbot", now, settings.USER_ONLINE_TIMEOUT)
+    cache.set("seen_OpenAI", now, settings.USER_ONLINE_TIMEOUT)
 
     async_to_sync(channel_layer.group_send)(
         "users", {"type": "users.update", "content": Profile.get_online_users()}
@@ -45,5 +49,35 @@ def chatbot_response(thread_id: int, text: str) -> None:
     response = str(chatbot.get_response(text))
 
     message = Message(thread_id=thread_id, user=chatbot_user, text=response)
+    message.lang, _ = langid.classify(message.text)
+    message.save()
+
+
+@shared_task
+def openai_response(thread_id: int) -> None:
+    """Task to send a response from OpenAI."""
+    openai_user = User.objects.get(username="OpenAI")
+    messages = (
+        Message.objects.select_related("user")
+        .filter(thread_id=thread_id)
+        .order_by("date")[:20]
+    )
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt="".join(
+            [f"{message.user.username}: {message.text}\n" for message in messages]
+            + [f"{openai_user.username}: "]
+        ),
+        temperature=0.9,
+        max_tokens=150,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0.6,
+        stop=["\n"]
+        + [f"{user.username}: " for user in (messages[0].user, openai_user)],
+    )
+    answer = response["choices"][0]["text"]
+
+    message = Message(thread_id=thread_id, user=openai_user, text=answer)
     message.lang, _ = langid.classify(message.text)
     message.save()

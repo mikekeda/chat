@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 from core.models import Message, Profile, UnreadThread
-from core.tasks import chatbot_response
+from core.tasks import chatbot_response, openai_response
 
 
 class WsUsers(JsonWebsocketConsumer):
@@ -63,6 +63,8 @@ class WsThread(JsonWebsocketConsumer):
                     if user.username == "chatbot":
                         # This is a message for chat bot.
                         chatbot_response.delay(self.thread_id, content.get("text"))
+                    if user.username == "OpenAI":
+                        openai_response.delay(self.thread_id)
                     else:
                         UnreadThread.objects.get_or_create(
                             thread_id=self.thread_id, user=user
