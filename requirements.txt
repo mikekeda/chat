@@ -11,7 +11,7 @@ langid==1.1.6
 openai==0.11.5
 Pillow==8.4.0
 pint==0.18
-psycopg2-binary==2.9.2
+psycopg2-binary==2.9.3
 requests==2.26.0
 social-auth-app-django==5.0.0
 social-auth-core==4.1.0
