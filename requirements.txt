@@ -14,4 +14,4 @@ pint==0.18
 psycopg2-binary==2.9.3
 requests==2.27.1
 social-auth-app-django==5.0.0
-social-auth-core==4.1.0
+social-auth-core==4.2.0
