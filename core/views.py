@@ -12,7 +12,7 @@ from django.db.models import Count
 from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 from django.views import View
 
 from core.models import Profile, Thread, UnreadThread, Message
@@ -151,7 +151,7 @@ class ProfileView(View, GetUserMixin):
                 )
 
         return JsonResponse(
-            ugettext("You can't change this field"), safe=False, status=403
+            gettext("You can't change this field"), safe=False, status=403
         )
 
 
@@ -250,7 +250,7 @@ class ThreadView(View, GetUserMixin):
                     )
 
         return JsonResponse(
-            ugettext("You can't change this field"), safe=False, status=403
+            gettext("You can't change this field"), safe=False, status=403
         )
 
 
