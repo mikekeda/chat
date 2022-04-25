@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     "channels",
     "social_django",
     "widget_tweaks",
-    "chatterbot.ext.django_chatterbot",
+    # "chatterbot.ext.django_chatterbot",
     "core",
 ]
 

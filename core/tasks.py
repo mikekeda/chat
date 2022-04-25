@@ -4,7 +4,7 @@ import langid
 from asgiref.sync import async_to_sync
 from celery import Celery, shared_task
 from channels.layers import get_channel_layer
-from chatterbot import ChatBot
+# from chatterbot import ChatBot
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
