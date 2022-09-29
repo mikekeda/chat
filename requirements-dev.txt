@@ -1,4 +1,4 @@
-coverage==6.4.4
+coverage==6.5.0
 cython==0.29.32
 line_profiler==3.5.1
 django-debug-toolbar==3.7.0
