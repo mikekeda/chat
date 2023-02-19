@@ -34,7 +34,7 @@
           <a class="nav-link" href="{{ chatbot_url }}">{% trans "Chatbot" %}</a>
         </li>
         {% endwith %}
-        {% with '/chat/OpenAI' as openai_url %}
+        {% with '/chat/ChatGPT' as openai_url %}
         <li class="nav-item {% if request.get_full_path == openai_url %}active{% endif %}">
           <a class="nav-link" href="{{ openai_url }}">ChatGPT</a>
         </li>
