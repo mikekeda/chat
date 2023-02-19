@@ -64,7 +64,7 @@ def openai_response(thread_id: int) -> None:
         .order_by("date")[:20]
     )
     response = openai.Completion.create(
-        engine="davinci",
+        engine="text-davinci-003",
         prompt="".join(
             [f"{message.user.username}: {message.text}\n" for message in messages]
             + [f"{openai_user.username}: "]
