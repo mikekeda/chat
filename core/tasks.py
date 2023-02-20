@@ -30,7 +30,7 @@ def update_user_statuses() -> None:
     # Chat bot is always online.
     now = datetime.datetime.now()
     cache.set("seen_chatbot", now, settings.USER_ONLINE_TIMEOUT)
-    cache.set("seen_OpenAI", now, settings.USER_ONLINE_TIMEOUT)
+    cache.set("seen_ChatGPT", now, settings.USER_ONLINE_TIMEOUT)
 
     async_to_sync(channel_layer.group_send)(
         "users", {"type": "users.update", "content": Profile.get_online_users()}
@@ -55,9 +55,9 @@ def chatbot_response(thread_id: int, text: str) -> None:
 
 
 @shared_task
-def openai_response(thread_id: int) -> None:
-    """Task to send a response from OpenAI."""
-    openai_user = User.objects.get(username="OpenAI")
+def chat_gpt_response(thread_id: int) -> None:
+    """Task to send a response from ChatGPT."""
+    chat_gpt_user = User.objects.get(username="ChatGPT")
     messages = (
         Message.objects.select_related("user")
         .filter(thread_id=thread_id)
@@ -67,7 +67,7 @@ def openai_response(thread_id: int) -> None:
         engine="text-davinci-003",
         prompt="".join(
             [f"{message.user.username}: {message.text}\n" for message in messages]
-            + [f"{openai_user.username}: "]
+            + [f"{chat_gpt_user.username}: "]
         ),
         temperature=0.9,
         max_tokens=150,
@@ -75,10 +75,10 @@ def openai_response(thread_id: int) -> None:
         frequency_penalty=0,
         presence_penalty=0.6,
         stop=["\n"]
-        + [f"{user.username}: " for user in (messages[0].user, openai_user)],
+        + [f"{user.username}: " for user in (messages[0].user, chat_gpt_user)],
     )
     answer = response["choices"][0]["text"]
 
-    message = Message(thread_id=thread_id, user=openai_user, text=answer)
+    message = Message(thread_id=thread_id, user=chat_gpt_user, text=answer)
     message.lang, _ = langid.classify(message.text)
     message.save()
