@@ -7,9 +7,9 @@ django-redis==5.2.0
 django-widget-tweaks==1.4.12
 geoip2==4.6.0
 langid==1.1.6
-openai==0.27.5
+openai==0.27.6
 Pillow==9.5.0
-pint==0.20.1
+pint==0.21
 psycopg2-binary==2.9.6
 requests==2.29.0
 social-auth-app-django==5.2.0
