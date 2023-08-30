@@ -4,10 +4,10 @@ channels-redis==4.1.0
 chatterbot-corpus==1.2.0
 Django==4.2.4
 django-redis==5.3.0
-django-widget-tweaks==1.4.12
+django-widget-tweaks==1.5.0
 geoip2==4.7.0
 langid==1.1.6
-openai==0.27.8
+openai==0.27.10
 Pillow==10.0.0
 pint==0.22
 psycopg2-binary==2.9.7
