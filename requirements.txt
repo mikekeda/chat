@@ -2,7 +2,7 @@ celery==5.3.6
 channels==4.0.0
 channels-redis==4.2.0
 chatterbot-corpus==1.2.0
-Django==5.0.1
+Django==5.0.2
 django-redis==5.4.0
 django-widget-tweaks==1.5.0
 geoip2==4.8.0
