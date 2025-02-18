@@ -17,7 +17,7 @@ class ChatViewTest(TestCase):
         self.mock_cache = view_patcher_cache.start()
         self.addCleanup(view_patcher_cache.stop)
         # Create usual user.
-        self.password = User.objects.make_random_password()
+        self.password = "qwerty"
         test_user = User.objects.create_user(
             username="testuser", password=self.password
         )

@@ -17,7 +17,7 @@ class ChatContextProcessorTest(TestCase):
         self.mock_cache = patcher_cache.start()
         self.addCleanup(patcher_cache.stop)
         # Create usual user.
-        self.password = User.objects.make_random_password()
+        self.password = "qwerty"
         self.test_user = User.objects.create_user(
             username="testuser", password=self.password
         )

@@ -7,7 +7,7 @@ User = get_user_model()
 class ChatAdminTest(TestCase):
     def setUp(self):
         # Create admin user.
-        self.password = User.objects.make_random_password()
+        self.password = "qwerty"
         test_admin = User.objects.create_superuser(
             username="testadmin", email="myemail@test.com", password=self.password
         )

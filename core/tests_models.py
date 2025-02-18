@@ -11,7 +11,7 @@ User = get_user_model()
 class ChatModelTest(TestCase):
     def setUp(self):
         """Setup some initial users."""
-        self.password = User.objects.make_random_password()
+        self.password = "qwerty"
         self.user_bob = User.objects.create_user(
             username="test_model_user1", password=self.password
         )
