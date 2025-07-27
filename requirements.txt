@@ -1,13 +1,13 @@
 celery==5.5.3
 channels==4.2.2
-channels-redis==4.2.1
+channels-redis==4.3.0
 chatterbot-corpus==1.2.2
 Django==5.2.4
 django-redis==6.0.0
 django-widget-tweaks==1.5.0
 geoip2==5.1.0
 langid==1.1.6
-openai==1.97.0
+openai==1.97.1
 Pillow==11.3.0
 pint==0.24.4
 psycopg2-binary==2.9.10
