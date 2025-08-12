@@ -1,4 +1,4 @@
-coverage==7.10.0
+coverage==7.10.3
 cython==3.1.2
 line_profiler==5.0.0
 django-debug-toolbar==6.0.0
@@ -7,6 +7,6 @@ django-debug-toolbar-request-history==0.1.4
 -e git+https://github.com/mikekeda/django-jenkins.git#egg=django-jenkins
 pep8==1.7.1
 pyflakes==3.4.0
-pylint==3.3.7
+pylint==3.3.8
 pylint-django==2.6.1
 pylint-plugin-utils==0.9.0
