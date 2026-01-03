@@ -1,4 +1,4 @@
-coverage==7.13.0
+coverage==7.13.1
 cython==3.2.3
 line_profiler==5.0.0
 django-debug-toolbar==6.1.0
@@ -8,5 +8,5 @@ django-debug-toolbar-request-history==0.1.4
 pep8==1.7.1
 pyflakes==3.4.0
 pylint==4.0.4
-pylint-django==2.6.1
+pylint-django==2.7.0
 pylint-plugin-utils==0.9.0
