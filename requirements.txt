@@ -1,4 +1,4 @@
-celery==5.6.1
+celery==5.6.2
 channels==4.3.2
 channels-redis==4.3.0
 chatterbot-corpus==1.2.2
