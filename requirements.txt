@@ -7,7 +7,7 @@ django-redis==6.0.0
 django-widget-tweaks==1.5.1
 geoip2==5.2.0
 langid==1.1.6
-openai==2.15.0
+openai==2.16.0
 Pillow==12.1.0
 pint==0.25.2
 psycopg2-binary==2.9.11
