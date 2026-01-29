@@ -15,7 +15,6 @@ from .views import (
     ProfileView,
 )
 
-
 app_name = "Chat"
 
 urlpatterns = [

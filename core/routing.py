@@ -7,7 +7,6 @@ from channels.auth import AuthMiddlewareStack
 
 from core.consumers import WsUsers, WsThread
 
-
 chat = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
