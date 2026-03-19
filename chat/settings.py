@@ -264,7 +264,7 @@ USE_X_FORWARDED_HOST = True
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_ROOT = "/home/voron/sites/cdn/chat"
+STATIC_ROOT = "/home/debian/sites/cdn/chat"
 
 STATIC_URL = "https://storage.googleapis.com/cdn.mkeda.me/chat/"
 if DEBUG:
