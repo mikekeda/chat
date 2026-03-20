@@ -66,6 +66,13 @@ ADMINS = [("Mike", "mriynuk@gmail.com")]
 
 ALLOWED_HOSTS = get_env_var("ALLOWED_HOSTS", "*").split(",")
 
+# Required for Django 4.0+ CSRF origin checking. Derive from ALLOWED_HOSTS.
+_allowed = get_env_var("ALLOWED_HOSTS", "")
+if _allowed:
+    CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in _allowed.split(",")]
+else:
+    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
+
 
 # Application definition
 
