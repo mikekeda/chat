@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 from core.models import Message, Profile, UnreadThread
-from core.tasks import chatbot_response, chat_gpt_response
+from core.tasks import chat_gpt_response
 
 
 class WsUsers(JsonWebsocketConsumer):
@@ -60,9 +60,6 @@ class WsThread(JsonWebsocketConsumer):
                 # Create unread thread for each user in thread,
                 # we will delete it latter.
                 for user in message.thread.users.all():
-                    if user.username == "chatbot":
-                        # This is a message for chat bot.
-                        chatbot_response.delay(self.thread_id, content.get("text"))
                     if user.username == "ChatGPT":
                         chat_gpt_response.delay(self.thread_id)
                     else:

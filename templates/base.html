@@ -29,11 +29,6 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
         {% if user.is_authenticated %}
-        {% with '/chat/chatbot' as chatbot_url %}
-        <li class="nav-item {% if request.get_full_path == chatbot_url %}active{% endif %}">
-          <a class="nav-link" href="{{ chatbot_url }}">{% trans "Chatbot" %}</a>
-        </li>
-        {% endwith %}
         {% with '/chat/ChatGPT' as chat_gpt_url %}
         <li class="nav-item {% if request.get_full_path == chat_gpt_url %}active{% endif %}">
           <a class="nav-link" href="{{ chat_gpt_url }}">ChatGPT</a>

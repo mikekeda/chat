@@ -134,7 +134,7 @@ class Message(models.Model):
                 "content": {
                     "payload": {
                         "action": action,
-                        "data": json.loads(serializers.serialize("json", [self])[1:-1]),
+                        "data": json.loads(serializers.serialize("json", [self]))[0],
                         "pk": self.pk,
                     }
                 },
