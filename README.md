@@ -48,5 +48,3 @@ Useful manage.py commands
     python manage.py test
     # Run tests and check code style and coverage
     python manage.py jenkins --enable-coverage --pep8-exclude migrations --pylint-rcfile .pylintrc
-    # Train Chatterbot
-    python manage.py train

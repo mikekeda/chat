@@ -86,7 +86,6 @@ INSTALLED_APPS = [
     "channels",
     "social_django",
     "widget_tweaks",
-    # "chatterbot.ext.django_chatterbot",
     "core",
 ]
 
@@ -143,8 +142,6 @@ WSGI_APPLICATION = "chat.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -205,8 +202,6 @@ CHANNEL_LAYERS = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -233,8 +228,6 @@ LANGUAGES = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -273,7 +266,7 @@ USE_X_FORWARDED_HOST = True
 
 STATIC_ROOT = "/home/debian/sites/cdn/chat"
 
-STATIC_URL = "https://storage.googleapis.com/cdn.mkeda.me/chat/"
+STATIC_URL = "/static/"
 if DEBUG:
     STATIC_URL = "/static/"
 
@@ -299,32 +292,6 @@ GEOIP_PATH = "geo/"
 
 ASGI_APPLICATION = "core.routing.chat"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-CHATTERBOT = {
-    "name": "Chat Bot",
-    "logic_adapters": [
-        {
-            "import_path": "chatterbot.logic.BestMatch",
-            "default_response": "I am sorry, but I do not understand.",
-            "maximum_similarity_threshold": 0.1,
-        },
-        {
-            "import_path": "chatterbot.logic.UnitConversion",
-        },
-        {
-            "import_path": "chatterbot.logic.MathematicalEvaluation",
-        },
-    ],
-    "trainer": "chatterbot.trainers.ChatterBotCorpusTrainer",
-    "storage_adapter": "chatterbot.storage.DjangoStorageAdapter",
-    "training_data": [
-        "chatterbot.corpus.english",
-        "chatterbot.corpus.spanish",
-        "chatterbot.corpus.italian",
-        "chatterbot.corpus.french",
-        "chatterbot.corpus.russian",
-    ],
-}
 
 OPENAI_API_KEY = get_env_var("OPENAI_API_KEY")
 
