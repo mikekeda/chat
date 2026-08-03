@@ -39,11 +39,12 @@ def update_user_statuses() -> None:
 def chat_gpt_response(thread_id: int) -> None:
     """Task to send a response from ChatGPT."""
     chat_gpt_user = User.objects.get(username="ChatGPT")
-    messages = (
+    # Take the 20 most recent messages, oldest first.
+    messages = list(
         Message.objects.select_related("user")
         .filter(thread_id=thread_id)
-        .order_by("date")[:20]
-    )
+        .order_by("-date")[:20]
+    )[::-1]
     response = openai_client.completions.create(
         model="gpt-5.4-mini",
         prompt="".join(

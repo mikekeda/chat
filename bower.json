@@ -1,0 +1,7 @@
+{
+  "name": "chat",
+  "dependencies": {
+    "gmaps-marker-clusterer": "gmaps-marker-clusterer/gmaps-marker-clusterer#^1.2.2",
+    "bootstrap": "^5.3.8"
+  }
+}

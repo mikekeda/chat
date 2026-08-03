@@ -15,7 +15,7 @@ chat = ProtocolTypeRouter(
                 URLRouter(
                     [
                         re_path(r"^ws/users/$", WsUsers.as_asgi()),
-                        re_path(r"^ws/thread/(?P<thread>\w+)$", WsThread.as_asgi()),
+                        re_path(r"^ws/thread/(?P<thread>\d+)$", WsThread.as_asgi()),
                     ]
                 )
             )

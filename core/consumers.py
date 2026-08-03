@@ -2,7 +2,7 @@ import langid
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
-from core.models import Message, Profile, UnreadThread
+from core.models import Message, Profile, Thread, UnreadThread
 from core.tasks import chat_gpt_response
 
 
@@ -31,8 +31,21 @@ class WsThread(JsonWebsocketConsumer):
     thread_id = None
 
     def connect(self):
-        """Adds to specific 'thread' group."""
+        """Adds to specific 'thread' group if the user is a member."""
         self.thread_id = int(self.scope["url_route"]["kwargs"].get("thread"))
+
+        user = self.scope.get("user")
+        is_member = (
+            user is not None
+            and user.is_authenticated
+            and (
+                user.is_superuser
+                or Thread.objects.filter(pk=self.thread_id, users=user).exists()
+            )
+        )
+        if not is_member:
+            self.close()
+            return
 
         async_to_sync(self.channel_layer.group_add)(
             "thread-{}".format(str(self.thread_id)), self.channel_name

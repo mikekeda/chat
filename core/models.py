@@ -1,4 +1,3 @@
-import datetime
 import json
 
 from asgiref.sync import async_to_sync
@@ -115,16 +114,12 @@ class Message(models.Model):
 
     link_to_thread.short_description = "Link to thread"
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         action = "create" if self.pk is None else "update"
 
         self.thread.last_message = timezone.now()
-        self.thread.save()
-        super().save(
-            force_insert=False, force_update=False, using=None, update_fields=None
-        )
+        self.thread.save(update_fields=["last_message"])
+        super().save(*args, **kwargs)
 
         # Update the message in the thread via websockets.
         async_to_sync(channel_layer.group_send)(
@@ -193,7 +188,7 @@ class FriendshipRequest(models.Model):
 
     def reject(self):
         """Reject this friendship request."""
-        self.rejected = datetime.datetime.now()
+        self.rejected = timezone.now()
         self.save()
 
     def cancel(self):
@@ -202,7 +197,7 @@ class FriendshipRequest(models.Model):
 
     def mark_viewed(self):
         """Mark this friendship request as viewed."""
-        self.viewed = datetime.datetime.now()
+        self.viewed = timezone.now()
         self.save()
 
     def __str__(self):
@@ -223,15 +218,11 @@ class Friend(models.Model):
     class Meta:
         unique_together = (("from_user", "to_user"),)
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         # Ensure users can't be friends with themselves.
         if self.to_user == self.from_user:
             raise ValidationError("Users cannot be friends with themselves.")
-        super().save(
-            force_insert=False, force_update=False, using=None, update_fields=None
-        )
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "User #{} is friends with #{}".format(self.to_user_id, self.from_user_id)

@@ -101,7 +101,7 @@ class ProfileView(View, GetUserMixin):
         if not user:
             return redirect_to_login(request.path)
 
-        form = AvatarForm(data=request.POST)
+        form = AvatarForm()
         is_editing_allowed = user == request.user or request.user.is_superuser
         threads = (
             Thread.objects.filter(users=user, last_message__isnull=False)
@@ -179,6 +179,12 @@ class ThreadView(View, GetUserMixin):
                 thread.users.add(request.user, interlocutor)
         elif thread_id:
             thread = get_object_or_404(Thread, pk=thread_id)
+            if not (
+                request.user.is_superuser
+                or thread.users.filter(pk=request.user.pk).exists()
+            ):
+                # Don't leak thread existence to non-members.
+                raise Http404
         else:
             # username or thread_id should be passed.
             raise Http404
@@ -281,7 +287,9 @@ def log_in(request):
         else:
             ip = get_client_ip(request)
             log.warning(
-                "Failed login attempt from %s: %s, %s", ip, request.POST, request.META
+                "Failed login attempt for username %r from %s",
+                request.POST.get("username", ""),
+                ip,
             )
 
     return render(request, "login.html", {"form": form})
