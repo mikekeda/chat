@@ -1,7 +1,7 @@
 coverage==7.15.4
 cython==3.2.9
 line_profiler==5.0.2
-django-debug-toolbar==7.1.0
+django-debug-toolbar==7.1.1
 django-debug-toolbar-line-profiling==0.8.1
 django-debug-toolbar-request-history==0.1.4
 -e git+https://github.com/mikekeda/django-jenkins.git#egg=django-jenkins
