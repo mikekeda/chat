@@ -9,5 +9,5 @@ db.sqlite3
 *.pyc
 *.pickle
 dump.rdb
-celerybeat-schedule
+celerybeat-schedule*
 celerybeat.pid
