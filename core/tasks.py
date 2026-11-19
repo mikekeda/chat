@@ -22,7 +22,6 @@ User = get_user_model()
 langid.set_languages([code for code, _ in settings.LANGUAGES])
 
 
-
 @app.task
 def update_user_statuses() -> None:
     """Task to update user online statuses via websockets."""
@@ -30,9 +29,7 @@ def update_user_statuses() -> None:
     now = datetime.datetime.now()
     cache.set("seen_ChatGPT", now, settings.USER_ONLINE_TIMEOUT)
 
-    async_to_sync(channel_layer.group_send)(
-        "users", {"type": "users.update", "content": Profile.get_online_users()}
-    )
+    async_to_sync(channel_layer.group_send)("users", {"type": "users.update", "content": Profile.get_online_users()})
 
 
 @shared_task
@@ -40,24 +37,18 @@ def chat_gpt_response(thread_id: int) -> None:
     """Task to send a response from ChatGPT."""
     chat_gpt_user = User.objects.get(username="ChatGPT")
     # Take the 20 most recent messages, oldest first.
-    messages = list(
-        Message.objects.select_related("user")
-        .filter(thread_id=thread_id)
-        .order_by("-date")[:20]
-    )[::-1]
+    messages = list(Message.objects.select_related("user").filter(thread_id=thread_id).order_by("-date")[:20])[::-1]
     response = openai_client.completions.create(
         model="gpt-5.4-mini",
         prompt="".join(
-            [f"{message.user.username}: {message.text}\n" for message in messages]
-            + [f"{chat_gpt_user.username}: "]
+            [f"{message.user.username}: {message.text}\n" for message in messages] + [f"{chat_gpt_user.username}: "]
         ),
         temperature=0.9,
         max_tokens=150,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0.6,
-        stop=["\n"]
-        + [f"{user.username}: " for user in (messages[0].user, chat_gpt_user)],
+        stop=["\n"] + [f"{user.username}: " for user in (messages[0].user, chat_gpt_user)],
     )
     answer = response.choices[0].text
 

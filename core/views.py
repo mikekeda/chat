@@ -50,9 +50,7 @@ class GetUserMixin:
 def user_list(request):
     """User list."""
     users = (
-        User.objects.exclude(id=request.user.id)
-        .values_list("username", "last_login", named=True)
-        .order_by("username")
+        User.objects.exclude(id=request.user.id).values_list("username", "last_login", named=True).order_by("username")
     )
 
     return render(request, "user_list.html", {"users": users})
@@ -132,9 +130,7 @@ class ProfileView(View, GetUserMixin):
             form = AvatarForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
                 form.save()
-            return HttpResponseRedirect(
-                reverse("core:user", kwargs={"username": username})
-            )
+            return HttpResponseRedirect(reverse("core:user", kwargs={"username": username}))
 
         allowed_fields = ("first_name", "last_name", "email")
         field = request.POST.get("name", "")
@@ -146,13 +142,9 @@ class ProfileView(View, GetUserMixin):
                 user.save()
                 return JsonResponse({"success": True})
             except ValidationError as e:
-                return JsonResponse(
-                    ", ".join(e.message_dict[field]), safe=False, status=422
-                )
+                return JsonResponse(", ".join(e.message_dict[field]), safe=False, status=422)
 
-        return JsonResponse(
-            gettext("You can't change this field"), safe=False, status=403
-        )
+        return JsonResponse(gettext("You can't change this field"), safe=False, status=403)
 
 
 class ThreadView(View, GetUserMixin):
@@ -179,10 +171,7 @@ class ThreadView(View, GetUserMixin):
                 thread.users.add(request.user, interlocutor)
         elif thread_id:
             thread = get_object_or_404(Thread, pk=thread_id)
-            if not (
-                request.user.is_superuser
-                or thread.users.filter(pk=request.user.pk).exists()
-            ):
+            if not (request.user.is_superuser or thread.users.filter(pk=request.user.pk).exists()):
                 # Don't leak thread existence to non-members.
                 raise Http404
         else:
@@ -202,11 +191,7 @@ class ThreadView(View, GetUserMixin):
             }
 
         # Get last 50 messages.
-        messages = (
-            Message.objects.select_related("user", "user__profile")
-            .filter(thread=thread)
-            .order_by("-date")[:50]
-        )
+        messages = Message.objects.select_related("user", "user__profile").filter(thread=thread).order_by("-date")[:50]
         for message in messages:
             if message.user_id not in users:
                 try:
@@ -251,13 +236,9 @@ class ThreadView(View, GetUserMixin):
                     thread.save()
                     return JsonResponse({"success": True})
                 except ValidationError as e:
-                    return JsonResponse(
-                        ", ".join(e.message_dict[field]), safe=False, status=422
-                    )
+                    return JsonResponse(", ".join(e.message_dict[field]), safe=False, status=422)
 
-        return JsonResponse(
-            gettext("You can't change this field"), safe=False, status=403
-        )
+        return JsonResponse(gettext("You can't change this field"), safe=False, status=403)
 
 
 @login_required

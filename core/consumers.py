@@ -38,25 +38,18 @@ class WsThread(JsonWebsocketConsumer):
         is_member = (
             user is not None
             and user.is_authenticated
-            and (
-                user.is_superuser
-                or Thread.objects.filter(pk=self.thread_id, users=user).exists()
-            )
+            and (user.is_superuser or Thread.objects.filter(pk=self.thread_id, users=user).exists())
         )
         if not is_member:
             self.close()
             return
 
-        async_to_sync(self.channel_layer.group_add)(
-            "thread-{}".format(str(self.thread_id)), self.channel_name
-        )
+        async_to_sync(self.channel_layer.group_add)("thread-{}".format(str(self.thread_id)), self.channel_name)
         super().connect()
 
     def disconnect(self, code):
         """Remove from specific 'thread' group and close the webSocket."""
-        async_to_sync(self.channel_layer.group_discard)(
-            "thread-{}".format(str(self.thread_id)), self.channel_name
-        )
+        async_to_sync(self.channel_layer.group_discard)("thread-{}".format(str(self.thread_id)), self.channel_name)
         self.close()
 
     def receive_json(self, content, **kwargs):
@@ -76,14 +69,10 @@ class WsThread(JsonWebsocketConsumer):
                     if user.username == "ChatGPT":
                         chat_gpt_response.delay(self.thread_id)
                     else:
-                        UnreadThread.objects.get_or_create(
-                            thread_id=self.thread_id, user=user
-                        )
+                        UnreadThread.objects.get_or_create(thread_id=self.thread_id, user=user)
         elif "read" in content:
             # The message was delivered - delete user's unread thread.
-            UnreadThread.objects.filter(
-                thread_id=self.thread_id, user=self.scope.get("user")
-            ).delete()
+            UnreadThread.objects.filter(thread_id=self.thread_id, user=self.scope.get("user")).delete()
 
     def message_update(self, message):
         """Message binding."""

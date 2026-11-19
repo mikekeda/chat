@@ -38,9 +38,7 @@ class Profile(models.Model):
                 '<img src="{}"/>',
                 "https://maps.googleapis.com/maps/api/staticmap?"
                 "zoom=5&size=600x300&maptype=roadmap"
-                "&markers=color:red%7Clabel:C%7C{},{}&key={}".format(
-                    self.lat, self.lon, settings.GOOGLE_MAP_API_KEY
-                ),
+                "&markers=color:red%7Clabel:C%7C{},{}&key={}".format(self.lat, self.lon, settings.GOOGLE_MAP_API_KEY),
             )
         return "No location available"
 
@@ -78,9 +76,7 @@ class Thread(models.Model):
 
 class UnreadThread(models.Model):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    user = models.ForeignKey(
-        User, related_name="unread_thread", on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(User, related_name="unread_thread", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     def link_to_thread(self):
@@ -97,9 +93,7 @@ class UnreadThread(models.Model):
 
 
 class Message(models.Model):
-    thread = models.ForeignKey(
-        Thread, related_name="messages", on_delete=models.CASCADE
-    )
+    thread = models.ForeignKey(Thread, related_name="messages", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     lang = models.CharField(max_length=2, choices=settings.LANGUAGES, default="en")
@@ -147,9 +141,7 @@ class Message(models.Model):
             "thread-{}".format(thread_id),
             {
                 "type": "message.update",
-                "content": {
-                    "payload": {"action": "delete", "data": {"fields": None}, "pk": pk}
-                },
+                "content": {"payload": {"action": "delete", "data": {"fields": None}, "pk": pk}},
             },
         )
 
@@ -160,12 +152,8 @@ class Message(models.Model):
 class FriendshipRequest(models.Model):
     """Model to represent friendship requests."""
 
-    from_user = models.ForeignKey(
-        User, related_name="friendship_requests_sent", on_delete=models.CASCADE
-    )
-    to_user = models.ForeignKey(
-        User, related_name="friendship_requests_received", on_delete=models.CASCADE
-    )
+    from_user = models.ForeignKey(User, related_name="friendship_requests_sent", on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name="friendship_requests_received", on_delete=models.CASCADE)
     message = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     rejected = models.DateTimeField(blank=True, null=True)
@@ -182,9 +170,7 @@ class FriendshipRequest(models.Model):
         self.delete()
 
         # Delete any reverse requests
-        FriendshipRequest.objects.filter(
-            from_user=self.to_user, to_user=self.from_user
-        ).delete()
+        FriendshipRequest.objects.filter(from_user=self.to_user, to_user=self.from_user).delete()
 
     def reject(self):
         """Reject this friendship request."""
@@ -201,18 +187,14 @@ class FriendshipRequest(models.Model):
         self.save()
 
     def __str__(self):
-        return "User #{} friendship requested #{}".format(
-            self.from_user_id, self.to_user_id
-        )
+        return "User #{} friendship requested #{}".format(self.from_user_id, self.to_user_id)
 
 
 class Friend(models.Model):
     """Model to represent Friendships."""
 
     to_user = models.ForeignKey(User, related_name="friends", on_delete=models.CASCADE)
-    from_user = models.ForeignKey(
-        User, related_name="_unused_friend_relation", on_delete=models.CASCADE
-    )
+    from_user = models.ForeignKey(User, related_name="_unused_friend_relation", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
