@@ -18,9 +18,7 @@ class ChatContextProcessorTest(TestCase):
         self.addCleanup(patcher_cache.stop)
         # Create usual user.
         self.password = "qwerty"
-        self.test_user = User.objects.create_user(
-            username="testuser", password=self.password
-        )
+        self.test_user = User.objects.create_user(username="testuser", password=self.password)
         self.test_user.save()
 
     def test_context_processor_unread_threads(self):

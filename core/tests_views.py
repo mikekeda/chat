@@ -18,13 +18,9 @@ class ChatViewTest(TestCase):
         self.addCleanup(view_patcher_cache.stop)
         # Create usual user.
         self.password = "qwerty"
-        test_user = User.objects.create_user(
-            username="testuser", password=self.password
-        )
+        test_user = User.objects.create_user(username="testuser", password=self.password)
         test_user.save()
-        test_user2 = User.objects.create_user(
-            username="testuser2", password=self.password
-        )
+        test_user2 = User.objects.create_user(username="testuser2", password=self.password)
         test_user2.save()
         test_admin = User.objects.create_superuser(
             username="testadmin", email="myemail@test.com", password=self.password
@@ -133,9 +129,7 @@ class ChatViewTest(TestCase):
             {"name": "dummy_field", "value": "dummy_value"},
         )
         self.assertEqual(resp.status_code, 403)
-        self.assertEqual(
-            str(resp.content, encoding="utf8"), '"You can\'t change this field"'
-        )
+        self.assertEqual(str(resp.content, encoding="utf8"), '"You can\'t change this field"')
 
         # Admin can update profile for any user.
         self.client.login(username="testadmin", password=self.password)
@@ -169,9 +163,7 @@ class ChatViewTest(TestCase):
         self.assertTemplateUsed(resp, "thread.html")
 
         # Check the database.
-        chat = Thread.objects.filter(users__username="testuser").filter(
-            users__username="testuser2"
-        )
+        chat = Thread.objects.filter(users__username="testuser").filter(users__username="testuser2")
         self.assertEqual(len(chat), 1)
         self.assertEqual(str(chat[0]), "testuser, testuser2")
 

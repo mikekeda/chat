@@ -16,10 +16,7 @@ def unread_threads(request):
         )
 
         # Rename fields (thread__id to id, thread__name to name).
-        threads = [
-            namedtuple("Row", ("id", "name"))(id=thread[0], name=thread[1])
-            for thread in threads
-        ]
+        threads = [namedtuple("Row", ("id", "name"))(id=thread[0], name=thread[1]) for thread in threads]
 
         unread_threads_counter = len(threads)
 

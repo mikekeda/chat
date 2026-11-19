@@ -12,14 +12,10 @@ class ChatModelTest(TestCase):
     def setUp(self):
         """Setup some initial users."""
         self.password = "qwerty"
-        self.user_bob = User.objects.create_user(
-            username="test_model_user1", password=self.password
-        )
+        self.user_bob = User.objects.create_user(username="test_model_user1", password=self.password)
         self.user_bob.save()
 
-        self.user_steve = User.objects.create_user(
-            username="test_model_user2", password=self.password
-        )
+        self.user_steve = User.objects.create_user(username="test_model_user2", password=self.password)
         self.user_steve.save()
 
     def test_models_profile(self):
